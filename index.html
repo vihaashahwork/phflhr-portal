@@ -336,7 +336,7 @@ var employees  = [];
 var role       = "department";
 var pendingRole= "";
 var PASSWORDS  = { hr:"1234", it:"1234", admin:"1234" };
-var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzl8HxT6zWFCIInN15AfGq1qQ6Bt3IRONpIFIk_H640dxyfIq74u35SgSX_LhDsrdQ/exec";
+var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzWpyyhLYENUEr4Dm6x3eiz5bn97eru6AY8V7wCLGFgkoVXIoRsCrm4RNhsCaY5b71VZQ/exec";
 
 // ── TOAST ──
 function toast(msg, type) {
@@ -692,9 +692,34 @@ function downloadMIS() {
   toast("📥 MIS downloaded!", "success");
 }
 
+// ── LOAD DATA FROM SHEET ON STARTUP ──
+function loadFromSheet() {
+  var script = document.createElement("script");
+  var callbackName = "sheetCallback_" + Date.now();
+
+  window[callbackName] = function(data) {
+    if (Array.isArray(data) && data.length > 0) {
+      employees = data;
+      updateDashboard();
+      renderTable();
+      toast("✅ Data loaded — " + data.length + " records", "success");
+    }
+    delete window[callbackName];
+    document.body.removeChild(script);
+  };
+
+  script.src = APPS_SCRIPT_URL + "?callback=" + callbackName;
+  script.onerror = function() {
+    toast("⚠️ Could not sync from sheet.", "error");
+    delete window[callbackName];
+  };
+  document.body.appendChild(script);
+}
+
 // ── INIT ──
 updateDashboard();
 renderTable();
+loadFromSheet();
 </script>
 </body>
 </html>
