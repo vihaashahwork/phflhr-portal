@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>HR Onboarding Portal</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0d1117;--surface:#161b22;--surface2:#1c2330;--surface3:#21293a;
+  --border:#2a3444;--accent:#f5a623;--text:#e6edf3;
+  --text2:#8b949e;--text3:#6e7681;--green:#22c55e;--red:#ef4444;--yellow:#f59e0b;--blue:#3b82f6;--purple:#a855f7;
+}
+body{font-family:'Segoe UI',Inter,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* HEADER */
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 12px rgba(0,0,0,.3);}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),#e8890a);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.logo-text{font-size:16px;font-weight:700;} .logo-text span{color:var(--accent);}
+.header-right{display:flex;align-items:center;gap:12px;}
+.live-dot{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);}
+.live-dot::before{content:'';width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 5px var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.role-select-wrap{position:relative;}
+.role-select-wrap select{background:var(--surface3);color:var(--text);border:1px solid var(--border);padding:6px 28px 6px 10px;border-radius:7px;font-size:13px;cursor:pointer;appearance:none;outline:none;}
+.role-select-wrap::after{content:'▾';position:absolute;right:8px;top:50%;transform:translateY(-50%);color:var(--accent);pointer-events:none;font-size:11px;}
+.role-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.4px;}
+.rb-dept{background:rgba(245,166,35,.15);color:var(--accent);border:1px solid rgba(245,166,35,.3);}
+.rb-hr{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3);}
+.rb-it{background:rgba(59,130,246,.15);color:var(--blue);border:1px solid rgba(59,130,246,.3);}
+.rb-admin{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3);}
+.access-tag{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:.4px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px;}
+.toast-item{padding:12px 18px;border-radius:8px;font-size:13px;font-weight:500;box-shadow:0 4px 20px rgba(0,0,0,.4);animation:slideIn .3s ease;max-width:320px;}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+.toast-success{background:#14532d;border:1px solid var(--green);color:#bbf7d0;}
+.toast-error{background:#450a0a;border:1px solid var(--red);color:#fecaca;}
+.toast-info{background:#1e3a5f;border:1px solid var(--blue);color:#bfdbfe;}
+
+/* LAYOUT */
+.layout{display:flex;min-height:calc(100vh - 58px);}
+.sidebar{width:210px;background:var(--surface);border-right:1px solid var(--border);padding:16px 0;flex-shrink:0;}
+.sidebar-section{padding:6px 16px 3px;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-weight:600;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 18px;font-size:13px;color:var(--text2);cursor:pointer;border-left:3px solid transparent;transition:all .15s;}
+.nav-item:hover{background:var(--surface2);color:var(--text);}
+.nav-item.active{background:rgba(245,166,35,.08);color:var(--accent);border-left-color:var(--accent);}
+.nav-icon{font-size:14px;width:18px;text-align:center;}
+.main{flex:1;padding:22px;overflow-y:auto;min-width:0;}
+
+/* SECTION */
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+.section-bar{width:3px;height:17px;background:var(--accent);border-radius:2px;flex-shrink:0;}
+.section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:18px;overflow-x:auto;}
+.card+.card,.card+div{margin-top:14px;}
+
+/* METRICS */
+.metrics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;margin-bottom:14px;}
+.metric-card{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:14px 16px;position:relative;overflow:hidden;}
+.metric-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
+.mc-orange::after{background:linear-gradient(90deg,var(--accent),#e8890a);}
+.mc-red::after{background:linear-gradient(90deg,var(--red),#b91c1c);}
+.mc-green::after{background:linear-gradient(90deg,var(--green),#15803d);}
+.mc-blue::after{background:linear-gradient(90deg,var(--blue),#1d4ed8);}
+.mc-yellow::after{background:linear-gradient(90deg,var(--yellow),#b45309);}
+.mc-purple::after{background:linear-gradient(90deg,var(--purple),#7e22ce);}
+.metric-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;font-weight:600;}
+.metric-value{font-size:26px;font-weight:800;line-height:1;}
+.metric-sub{font-size:10px;color:var(--text3);margin-top:5px;}
+.mc-orange .metric-value{color:var(--accent);} .mc-red .metric-value{color:var(--red);}
+.mc-green .metric-value{color:var(--green);} .mc-blue .metric-value{color:var(--blue);}
+.mc-yellow .metric-value{color:var(--yellow);} .mc-purple .metric-value{color:var(--purple);}
+
+/* RING */
+.progress-ring{display:flex;align-items:center;gap:12px;}
+.ring-wrap{position:relative;width:50px;height:50px;flex-shrink:0;}
+.ring-wrap svg{transform:rotate(-90deg);}
+.ring-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;}
+.bar-track{background:var(--border);height:5px;border-radius:4px;}
+.bar-fill{height:5px;border-radius:4px;transition:width .5s;}
+.region-bars{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.region-bar-item{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;}
+.rb-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.rb-name{font-size:11px;color:var(--text2);font-weight:600;}
+.rb-count{font-size:13px;font-weight:700;}
+
+/* FORM */
+.form-section-title{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;font-weight:700;margin:16px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--border);}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;}
+.field{display:flex;flex-direction:column;gap:3px;}
+.field label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;font-weight:600;}
+.field input,.field select{background:var(--surface3);color:var(--text);border:1px solid var(--border);padding:8px 10px;border-radius:7px;font-size:13px;outline:none;transition:border-color .15s;width:100%;}
+.field input:focus,.field select:focus{border-color:var(--accent);}
+.field input::placeholder{color:var(--text3);}
+.field select option{background:var(--surface3);}
+.required-star{color:var(--red);margin-left:2px;}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:7px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:all .15s;}
+.btn-primary{background:var(--accent);color:#000;} .btn-primary:hover{background:#e8890a;}
+.btn-secondary{background:var(--surface3);color:var(--text);border:1px solid var(--border);} .btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+.btn-success{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3);} .btn-success:hover{background:rgba(34,197,94,.25);}
+.btn-danger{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3);} .btn-danger:hover{background:rgba(239,68,68,.25);}
+.btn-row{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;align-items:center;}
+.saving-spinner{display:none;font-size:12px;color:var(--text3);}
+
+/* TABLE */
+.table-toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;}
+.table-toolbar input,.table-toolbar select{background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:7px 10px;border-radius:7px;font-size:12px;outline:none;}
+.table-toolbar input{min-width:200px;}
+.count-tag{font-size:12px;color:var(--text3);margin-left:auto;}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:900px;}
+thead tr{border-bottom:1px solid var(--border);}
+th{padding:9px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);font-weight:700;white-space:nowrap;}
+td{padding:10px;border-bottom:1px solid rgba(42,52,68,.4);color:var(--text2);vertical-align:middle;white-space:nowrap;}
+tr:hover td{background:rgba(255,255,255,.02);}
+.ecode-cell{font-family:monospace;font-size:12px;color:var(--accent);font-weight:700;}
+.name-cell{color:var(--text);font-weight:600;}
+.badge{padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;}
+.b-done{background:rgba(34,197,94,.15);color:var(--green);}
+.b-pending{background:rgba(239,68,68,.15);color:var(--red);}
+.b-na{background:rgba(245,158,11,.15);color:var(--yellow);}
+.prog-wrap{min-width:80px;}
+.prog-track{background:var(--border);height:4px;border-radius:4px;margin-bottom:2px;}
+.prog-fill{height:4px;border-radius:4px;transition:width .4s;}
+.prog-label{font-size:10px;color:var(--text3);}
+.empty-row td{text-align:center;padding:36px;color:var(--text3);font-size:13px;}
+
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
+.overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:26px;width:360px;box-shadow:0 20px 60px rgba(0,0,0,.5);}
+.modal h3{font-size:15px;margin-bottom:5px;}
+.modal p{font-size:13px;color:var(--text2);margin-bottom:14px;}
+.modal input{width:100%;background:var(--surface3);color:var(--text);border:1px solid var(--border);padding:10px;border-radius:7px;font-size:14px;outline:none;margin-bottom:14px;}
+.modal input:focus{border-color:var(--accent);}
+.pw-error{font-size:12px;color:var(--red);margin-top:-10px;margin-bottom:10px;display:none;}
+
+/* TAB */
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+</style>
+</head>
+<body>
+
+<!-- TOAST CONTAINER -->
+<div class="toast" id="toastContainer"></div>
+
+<!-- PASSWORD MODAL -->
+<div class="overlay" id="pwOverlay">
+  <div class="modal">
+    <h3>🔒 Restricted Access</h3>
+    <p>Enter password to switch to <strong id="targetLabel" style="color:var(--accent)"></strong> view.</p>
+    <input type="password" id="pwInput" placeholder="Enter password..." onkeydown="if(event.key==='Enter')submitPw()">
+    <div class="pw-error" id="pwError">❌ Incorrect password. Try again.</div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-primary" onclick="submitPw()">🔓 Unlock</button>
+      <button class="btn btn-secondary" onclick="cancelPw()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">👥</div>
+    <div class="logo-text">HR <span>Onboarding</span> Portal</div>
+  </div>
+  <div class="header-right">
+    <div class="live-dot">Live</div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;">View</span>
+      <div class="role-select-wrap">
+        <select id="roleSelect" onchange="changeRole()">
+          <option value="department">Department View</option>
+          <option value="hr">HR View</option>
+          <option value="it">IT View</option>
+          <option value="admin">Admin View</option>
+        </select>
+      </div>
+      <span class="role-badge rb-dept" id="roleBadge">DEPT</span>
+    </div>
+    <div class="access-tag" id="accessTag" style="background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);color:var(--accent);">READ-ONLY</div>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-section">Main</div>
+    <div class="nav-item active" id="nav-dashboard" onclick="showTab('dashboard')"><span class="nav-icon">📊</span>Dashboard</div>
+    <div class="nav-item" id="nav-tracker" onclick="showTab('tracker')"><span class="nav-icon">📋</span>Joiner Tracker</div>
+    <div class="nav-item" id="nav-add" onclick="showTab('add')" style="display:none;"><span class="nav-icon">➕</span>Add Joiner</div>
+    <div class="nav-item" id="nav-upload" onclick="showTab('upload')" style="display:none;"><span class="nav-icon">📂</span>Bulk Upload</div>
+    <div class="sidebar-section" style="margin-top:14px;">Regions</div>
+    <div class="nav-item" onclick="filterByRegion('North 1')"><span class="nav-icon">🔵</span>North 1</div>
+    <div class="nav-item" onclick="filterByRegion('North 2')"><span class="nav-icon">🟣</span>North 2</div>
+    <div class="nav-item" onclick="filterByRegion('South')"><span class="nav-icon">🟢</span>South</div>
+    <div class="nav-item" onclick="filterByRegion('West')"><span class="nav-icon">🟡</span>West</div>
+  </nav>
+
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <div class="tab-content active" id="tab-dashboard">
+      <div class="section-header"><div class="section-bar"></div><div class="section-title">Dashboard Overview</div></div>
+      <div class="metrics-grid">
+        <div class="metric-card mc-orange"><div class="metric-label">Total Joiners</div><div class="metric-value" id="m-total">0</div><div class="metric-sub">All onboarded employees</div></div>
+        <div class="metric-card mc-green"><div class="metric-label">Fully Completed</div><div class="metric-value" id="m-complete">0</div><div class="metric-sub">Email + Omnifin + ID Card</div></div>
+        <div class="metric-card mc-red"><div class="metric-label">BGV Pending</div><div class="metric-value" id="m-bgv">0</div><div class="metric-sub">Verification due</div></div>
+        <div class="metric-card mc-blue"><div class="metric-label">Email Pending</div><div class="metric-value" id="m-email">0</div><div class="metric-sub">Mail ID not created</div></div>
+        <div class="metric-card mc-yellow"><div class="metric-label">Omnifin Pending</div><div class="metric-value" id="m-omnifin">0</div><div class="metric-sub">Setup incomplete</div></div>
+        <div class="metric-card mc-purple"><div class="metric-label">ID Card Pending</div><div class="metric-value" id="m-idcard">0</div><div class="metric-sub">Not dispatched</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="card">
+          <div class="section-header" style="margin-bottom:12px;"><div class="section-bar"></div><div class="section-title">Completion Overview</div></div>
+          <div class="progress-ring">
+            <div class="ring-wrap">
+              <svg width="50" height="50" viewBox="0 0 50 50">
+                <circle cx="25" cy="25" r="20" fill="none" stroke="var(--border)" stroke-width="5"/>
+                <circle id="ringCircle" cx="25" cy="25" r="20" fill="none" stroke="var(--green)" stroke-width="5" stroke-dasharray="125.6" stroke-dashoffset="125.6" stroke-linecap="round"/>
+              </svg>
+              <div class="ring-center" id="ringPct">0%</div>
+            </div>
+            <div>
+              <div style="font-size:13px;color:var(--text);font-weight:600;" id="ringLabel">0 of 0 completed</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:2px;">Email + Omnifin + ID Card done</div>
+            </div>
+          </div>
+          <div style="margin-top:14px;display:flex;flex-direction:column;gap:7px;" id="checklistBars"></div>
+        </div>
+        <div class="card">
+          <div class="section-header" style="margin-bottom:12px;"><div class="section-bar"></div><div class="section-title">Region Breakdown</div></div>
+          <div class="region-bars" id="regionBars"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRACKER -->
+    <div class="tab-content" id="tab-tracker">
+      <div class="section-header">
+        <div class="section-bar"></div><div class="section-title">Joiner Tracker</div>
+        <button class="btn btn-success" style="margin-left:auto;" onclick="downloadMIS()">⬇ Download MIS</button>
+      </div>
+      <div class="card">
+        <div class="table-toolbar">
+          <input id="searchInput" placeholder="🔍  Search name or Ecode..." oninput="renderTable()">
+          <select id="filterRegion" onchange="renderTable()"><option value="">All Regions</option><option>North 1</option><option>North 2</option><option>South</option><option>West</option></select>
+          <select id="filterBGV" onchange="renderTable()"><option value="">BGV: All</option><option value="Yes">Done</option><option value="No">Pending</option></select>
+          <select id="filterStatus" onchange="renderTable()"><option value="">Status: All</option><option value="complete">Completed</option><option value="incomplete">Incomplete</option></select>
+          <span class="count-tag" id="countLabel"></span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Ecode</th><th>Name</th><th>Dept</th><th>Region</th><th>DOJ</th>
+              <th>BGV</th><th>Email</th><th>Omnifin</th><th>ID Card</th>
+              <th>Progress</th><th id="actionTh">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ADD JOINER -->
+    <div class="tab-content" id="tab-add">
+      <div class="section-header"><div class="section-bar"></div><div class="section-title" id="formTitle">Add New Joiner</div></div>
+      <div class="card">
+        <div class="form-section-title">Personal Information</div>
+        <div class="form-grid">
+          <div class="field"><label>Ecode<span class="required-star">*</span></label><input id="ecode" placeholder="EMP001"></div>
+          <div class="field"><label>Full Name<span class="required-star">*</span></label><input id="name" placeholder="John Doe"></div>
+          <div class="field"><label>Mobile</label><input id="mobile" placeholder="+91 9999999999"></div>
+          <div class="field"><label>Department</label><input id="department" placeholder="Engineering"></div>
+          <div class="field"><label>Designation</label><input id="designation" placeholder="Senior Analyst"></div>
+          <div class="field"><label>Location</label><input id="location" placeholder="Mumbai"></div>
+          <div class="field"><label>Region</label><select id="region"><option>North 1</option><option>North 2</option><option>South</option><option>West</option></select></div>
+          <div class="field"><label>Date of Joining</label><input type="date" id="doj"></div>
+          <div class="field"><label>Onboarded Date</label><input type="date" id="onboardDate"></div>
+        </div>
+        <div class="form-section-title">HR Status</div>
+        <div class="form-grid">
+          <div class="field"><label>BGV Done</label><select id="bgvDone"><option>No</option><option>Yes</option></select></div>
+          <div class="field"><label>BGV Report Generated</label><select id="bgvReport"><option>No</option><option>Yes</option></select></div>
+          <div class="field"><label>ID Card Sent</label><select id="idSent"><option>No</option><option>Yes</option></select></div>
+        </div>
+        <div class="form-section-title">IT Status</div>
+        <div class="form-grid">
+          <div class="field"><label>Mail ID Created</label><select id="emailCreated"><option>No</option><option>Yes</option></select></div>
+          <div class="field"><label>Mail Created Date</label><input type="date" id="emailDate"></div>
+          <div class="field"><label>Mail ID</label><input id="emailId" placeholder="john.doe@company.com"></div>
+          <div class="field"><label>Omnifin Required</label><select id="omnifinReq"><option>No</option><option>Yes</option><option>Not Required</option></select></div>
+          <div class="field"><label>Omnifin Created Date</label><input type="date" id="omnifinDate"></div>
+          <div class="field"><label>Asset Required</label><select id="assetReq"><option>No</option><option>Laptop</option><option>Desktop</option></select></div>
+          <div class="field"><label>IMEI Number</label><input id="imeiNumber" placeholder="IMEI Number"></div>
+          <div class="field"><label>IMEI Screenshot</label><input type="file" id="imeiFile" accept="image/*"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="saveBtn" onclick="saveJoiner()">💾 Save Joiner</button>
+          <button class="btn btn-secondary" onclick="clearForm()">✕ Clear</button>
+          <span class="saving-spinner" id="savingSpinner">⏳ Saving to sheet...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- UPLOAD -->
+    <div class="tab-content" id="tab-upload">
+      <div class="section-header"><div class="section-bar"></div><div class="section-title">Bulk Upload & Export</div></div>
+      <div class="card" style="max-width:500px;">
+        <div style="margin-bottom:16px;">
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Upload CSV</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">CSV headers must match exactly. Existing Ecodes will be updated.</div>
+          <input type="file" id="csvFile" accept=".csv" style="background:var(--surface3);color:var(--text);border:1px solid var(--border);padding:8px 10px;border-radius:7px;font-size:13px;width:100%;">
+          <button class="btn btn-primary" style="margin-top:10px;" onclick="uploadCSV()">⬆ Upload CSV</button>
+        </div>
+        <div style="border-top:1px solid var(--border);padding-top:16px;">
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Export MIS</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Downloads full onboarding data as CSV with today's date.</div>
+          <button class="btn btn-success" onclick="downloadMIS()">⬇ Download MIS Report</button>
+        </div>
+        <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:4px;">
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Expected CSV Headers</div>
+          <div style="font-size:11px;color:var(--text3);line-height:1.8;background:var(--surface2);padding:10px;border-radius:6px;font-family:monospace;">
+            Ecode, Name, Mobile, Department, Designation, Location, Region, DOJ, Onboarded Date, BGV Done, BGV Report Generated, ID Card Sent, Mail ID Created, Mail Created Date, Mail ID, Omnifin Required, Omnifin Created Date, Asset Required, IMEI Number
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+var employees  = [];
+var role       = "department";
+var pendingRole= "";
+var PASSWORDS  = { hr:"1234", it:"1234", admin:"1234" };
+var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzl8HxT6zWFCIInN15AfGq1qQ6Bt3IRONpIFIk_H640dxyfIq74u35SgSX_LhDsrdQ/exec";
+
+// ── TOAST ──
+function toast(msg, type) {
+  var c = document.getElementById("toastContainer");
+  var t = document.createElement("div");
+  t.className = "toast-item toast-" + (type || "info");
+  t.innerText = msg;
+  c.appendChild(t);
+  setTimeout(function(){ t.style.opacity="0"; t.style.transition="opacity .4s"; setTimeout(function(){ c.removeChild(t); }, 400); }, 3500);
+}
+
+// ── ROLE ──
+function changeRole() {
+  var r = document.getElementById("roleSelect").value;
+  if (r === "department") { role = "department"; applyRole(); return; }
+  pendingRole = r;
+  document.getElementById("targetLabel").innerText = r.toUpperCase();
+  document.getElementById("pwInput").value = "";
+  document.getElementById("pwError").style.display = "none";
+  document.getElementById("pwInput").style.borderColor = "var(--border)";
+  document.getElementById("pwOverlay").classList.add("open");
+  setTimeout(function(){ document.getElementById("pwInput").focus(); }, 120);
+}
+
+function submitPw() {
+  var entered = document.getElementById("pwInput").value;
+  if (entered === PASSWORDS[pendingRole]) {
+    role = pendingRole;
+    document.getElementById("pwOverlay").classList.remove("open");
+    applyRole();
+    toast("Switched to " + role.toUpperCase() + " view", "success");
+  } else {
+    document.getElementById("pwInput").value = "";
+    document.getElementById("pwInput").style.borderColor = "var(--red)";
+    document.getElementById("pwError").style.display = "block";
+    setTimeout(function(){ document.getElementById("pwInput").style.borderColor="var(--border)"; }, 1500);
+  }
+}
+
+function cancelPw() {
+  document.getElementById("pwOverlay").classList.remove("open");
+  document.getElementById("roleSelect").value = role;
+}
+
+function applyRole() {
+  var isDept = role === "department";
+  var badgeMap = { department:"rb-dept", hr:"rb-hr", it:"rb-it", admin:"rb-admin" };
+  var labelMap = { department:"DEPT", hr:"HR", it:"IT", admin:"ADMIN" };
+  var badge = document.getElementById("roleBadge");
+  badge.className = "role-badge " + badgeMap[role];
+  badge.innerText = labelMap[role];
+  var tag = document.getElementById("accessTag");
+  if (isDept) {
+    tag.innerText="READ-ONLY"; tag.style.color="var(--accent)";
+    tag.style.borderColor="rgba(245,166,35,.3)"; tag.style.background="rgba(245,166,35,.1)";
+  } else {
+    tag.innerText="EDIT ACCESS"; tag.style.color="var(--green)";
+    tag.style.borderColor="rgba(34,197,94,.3)"; tag.style.background="rgba(34,197,94,.1)";
+  }
+  document.getElementById("nav-add").style.display    = isDept ? "none" : "";
+  document.getElementById("nav-upload").style.display = isDept ? "none" : "";
+  document.getElementById("actionTh").style.display   = isDept ? "none" : "";
+  if (isDept) showTab("dashboard");
+  renderTable();
+}
+
+// ── TABS ──
+function showTab(name) {
+  document.querySelectorAll(".tab-content").forEach(function(t){ t.classList.remove("active"); });
+  document.querySelectorAll(".nav-item").forEach(function(n){ n.classList.remove("active"); });
+  document.getElementById("tab-" + name).classList.add("active");
+  var el = document.getElementById("nav-" + name);
+  if (el) el.classList.add("active");
+}
+
+function filterByRegion(r) {
+  document.getElementById("filterRegion").value = r;
+  showTab("tracker"); renderTable();
+}
+
+// ── HELPERS ──
+function isComplete(e) {
+  return e["Mail ID Created"] === "Yes" &&
+         e["ID Card Sent"] === "Yes" &&
+         (e["Omnifin Required"] === "No" || e["Omnifin Required"] === "Not Required" || e["Omnifin Required"] === "Yes");
+}
+
+function calcProgress(e) {
+  var done = 0;
+  if (e["BGV Done"] === "Yes") done++;
+  if (e["Mail ID Created"] === "Yes") done++;
+  if (e["ID Card Sent"] === "Yes") done++;
+  if (e["Omnifin Required"] === "No" || e["Omnifin Required"] === "Not Required" || e["Omnifin Required"] === "Yes") done++;
+  return Math.round(done / 4 * 100);
+}
+
+function mkBadge(v, naLabel) {
+  if (v === "Yes") return '<span class="badge b-done">Done</span>';
+  if (v === "No")  return '<span class="badge b-pending">Pending</span>';
+  return '<span class="badge b-na">' + (naLabel || "N/A") + '</span>';
+}
+
+// ── SAVE ──
+function saveJoiner() {
+  var ecode = document.getElementById("ecode").value.trim();
+  var name  = document.getElementById("name").value.trim();
+  if (!ecode || !name) { toast("Ecode and Name are required.", "error"); return; }
+
+  var e = {
+    "Ecode": ecode, "Name": name,
+    "Mobile": document.getElementById("mobile").value,
+    "Department": document.getElementById("department").value,
+    "Designation": document.getElementById("designation").value,
+    "Location": document.getElementById("location").value,
+    "Region": document.getElementById("region").value,
+    "DOJ": document.getElementById("doj").value,
+    "Onboarded Date": document.getElementById("onboardDate").value,
+    "BGV Done": document.getElementById("bgvDone").value,
+    "BGV Report Generated": document.getElementById("bgvReport").value,
+    "ID Card Sent": document.getElementById("idSent").value,
+    "Mail ID Created": document.getElementById("emailCreated").value,
+    "Mail Created Date": document.getElementById("emailDate").value,
+    "Mail ID": document.getElementById("emailId").value,
+    "Omnifin Required": document.getElementById("omnifinReq").value,
+    "Omnifin Created Date": document.getElementById("omnifinDate").value,
+    "Asset Required": document.getElementById("assetReq").value,
+    "IMEI Number": document.getElementById("imeiNumber").value
+  };
+
+  var idx   = employees.findIndex(function(x){ return x.Ecode === ecode; });
+  var isNew = idx < 0;
+  if (isNew) employees.push(e); else employees[idx] = e;
+
+  // Show spinner
+  document.getElementById("savingSpinner").style.display = "inline";
+  document.getElementById("saveBtn").disabled = true;
+
+  postToSheet({ action: isNew ? "add" : "update", data: e }, function(){
+    document.getElementById("savingSpinner").style.display = "none";
+    document.getElementById("saveBtn").disabled = false;
+    toast(isNew ? "✅ Joiner saved & IT notified!" : "✅ Joiner updated successfully!", "success");
+    clearForm(); updateDashboard(); renderTable(); showTab("tracker");
+  });
+}
+
+function editRow(ecode) {
+  var e = employees.find(function(x){ return x.Ecode === ecode; });
+  if (!e) return;
+  var map = {
+    ecode:"Ecode", name:"Name", mobile:"Mobile", department:"Department",
+    designation:"Designation", location:"Location", region:"Region",
+    doj:"DOJ", onboardDate:"Onboarded Date", bgvDone:"BGV Done",
+    bgvReport:"BGV Report Generated", idSent:"ID Card Sent",
+    emailCreated:"Mail ID Created", emailDate:"Mail Created Date",
+    emailId:"Mail ID", omnifinReq:"Omnifin Required",
+    omnifinDate:"Omnifin Created Date", assetReq:"Asset Required",
+    imeiNumber:"IMEI Number"
+  };
+  Object.keys(map).forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.value = e[map[id]] || "";
+  });
+  document.getElementById("formTitle").innerText = "✏️ Edit — " + e.Name;
+  showTab("add");
+}
+
+function deleteRow(ecode) {
+  if (!confirm("Delete record for Ecode: " + ecode + "? This cannot be undone.")) return;
+  employees = employees.filter(function(e){ return e.Ecode !== ecode; });
+  updateDashboard(); renderTable();
+  toast("Record deleted.", "info");
+}
+
+function clearForm() {
+  ["ecode","name","mobile","department","designation","location","emailId","imeiNumber"]
+    .forEach(function(id){ document.getElementById(id).value = ""; });
+  ["doj","emailDate","omnifinDate","onboardDate"]
+    .forEach(function(id){ document.getElementById(id).value = ""; });
+  ["bgvDone","bgvReport","idSent","emailCreated","omnifinReq","assetReq","region"]
+    .forEach(function(id){ document.getElementById(id).selectedIndex = 0; });
+  document.getElementById("formTitle").innerText = "Add New Joiner";
+}
+
+// ── TABLE ──
+function getFiltered() {
+  var q  = document.getElementById("searchInput").value.toLowerCase();
+  var rg = document.getElementById("filterRegion").value;
+  var fb = document.getElementById("filterBGV").value;
+  var fs = document.getElementById("filterStatus").value;
+  return employees.filter(function(e){
+    if (q && !e.Name.toLowerCase().includes(q) && !e.Ecode.toLowerCase().includes(q)) return false;
+    if (rg && e.Region !== rg) return false;
+    if (fb && e["BGV Done"] !== fb) return false;
+    if (fs === "complete"   && !isComplete(e)) return false;
+    if (fs === "incomplete" &&  isComplete(e)) return false;
+    return true;
+  });
+}
+
+function renderTable() {
+  var filtered = getFiltered();
+  document.getElementById("countLabel").innerText = "Showing " + filtered.length + " of " + employees.length + " records";
+  var body   = document.getElementById("tableBody");
+  var isDept = role === "department";
+  body.innerHTML = "";
+  if (!filtered.length) {
+    body.innerHTML = '<tr class="empty-row"><td colspan="11">No records found. Add joiners to get started.</td></tr>';
+    return;
+  }
+  filtered.forEach(function(e){
+    var p      = calcProgress(e);
+    var pColor = p === 100 ? "var(--green)" : p >= 50 ? "var(--yellow)" : "var(--red)";
+    var done   = isComplete(e);
+    var tr     = document.createElement("tr");
+    tr.innerHTML =
+      '<td class="ecode-cell">' + e.Ecode + '</td>' +
+      '<td class="name-cell">' + e.Name + (done ? ' <span style="color:var(--green);font-size:10px;">✓</span>' : '') + '</td>' +
+      '<td>' + (e.Department || "—") + '</td>' +
+      '<td>' + e.Region + '</td>' +
+      '<td style="color:var(--text3);">' + (e.DOJ || "—") + '</td>' +
+      '<td>' + mkBadge(e["BGV Done"]) + '</td>' +
+      '<td>' + mkBadge(e["Mail ID Created"]) + '</td>' +
+      '<td>' + mkBadge(e["Omnifin Required"], "N/Req") + '</td>' +
+      '<td>' + mkBadge(e["ID Card Sent"]) + '</td>' +
+      '<td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill" style="width:' + p + '%;background:' + pColor + '"></div></div><div class="prog-label">' + p + '%</div></div></td>' +
+      '<td style="' + (isDept ? 'display:none' : '') + '">' +
+        '<button class="btn btn-success" style="padding:4px 9px;font-size:11px;" onclick="editRow(\'' + e.Ecode + '\')">Edit</button>' +
+        (role === "admin" ? ' <button class="btn btn-danger" style="padding:4px 9px;font-size:11px;" onclick="deleteRow(\'' + e.Ecode + '\')">Del</button>' : '') +
+      '</td>';
+    body.appendChild(tr);
+  });
+}
+
+// ── DASHBOARD ──
+function updateDashboard() {
+  var t = employees.length;
+  var bgv=0,email=0,omnifin=0,idcard=0,complete=0,r1=0,r2=0,s=0,w=0;
+  employees.forEach(function(e){
+    if (e["BGV Done"]==="No") bgv++;
+    if (e["Mail ID Created"]==="No") email++;
+    if (e["Omnifin Required"]==="Yes") omnifin++;
+    if (e["ID Card Sent"]==="No") idcard++;
+    if (isComplete(e)) complete++;
+    if (e.Region==="North 1") r1++;
+    if (e.Region==="North 2") r2++;
+    if (e.Region==="South") s++;
+    if (e.Region==="West") w++;
+  });
+  document.getElementById("m-total").innerText   = t;
+  document.getElementById("m-complete").innerText= complete;
+  document.getElementById("m-bgv").innerText     = bgv;
+  document.getElementById("m-email").innerText   = email;
+  document.getElementById("m-omnifin").innerText = omnifin;
+  document.getElementById("m-idcard").innerText  = idcard;
+
+  var pct  = t ? Math.round(complete/t*100) : 0;
+  var circ = 125.6;
+  document.getElementById("ringCircle").style.strokeDashoffset = circ - (circ * pct / 100);
+  document.getElementById("ringPct").innerText  = pct + "%";
+  document.getElementById("ringLabel").innerText= complete + " of " + t + " completed";
+
+  var checks = [
+    {label:"BGV Done",     done:t-bgv,    color:"var(--green)"},
+    {label:"Email Created",done:t-email,  color:"var(--blue)"},
+    {label:"Omnifin Setup",done:t-omnifin,color:"var(--yellow)"},
+    {label:"ID Card Sent", done:t-idcard, color:"var(--purple)"}
+  ];
+  document.getElementById("checklistBars").innerHTML = checks.map(function(c){
+    var p2 = t ? Math.round(c.done/t*100) : 0;
+    return '<div><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:3px;"><span>'+c.label+'</span><span style="color:var(--text);font-weight:600;">'+c.done+'/'+t+'</span></div><div class="bar-track"><div class="bar-fill" style="width:'+p2+'%;background:'+c.color+';"></div></div></div>';
+  }).join("");
+
+  var regions=[{name:"North 1",count:r1,color:"var(--blue)"},{name:"North 2",count:r2,color:"var(--purple)"},{name:"South",count:s,color:"var(--green)"},{name:"West",count:w,color:"var(--yellow)"}];
+  var maxR = Math.max(r1,r2,s,w,1);
+  document.getElementById("regionBars").innerHTML = regions.map(function(r){
+    return '<div class="region-bar-item"><div class="rb-top"><span class="rb-name">'+r.name+'</span><span class="rb-count">'+r.count+'</span></div><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(r.count/maxR*100)+'%;background:'+r.color+';"></div></div></div>';
+  }).join("");
+}
+
+// ── APPS SCRIPT SYNC via hidden form ──
+function postToSheet(payload, callback) {
+  try {
+    var iframeName = "hs_" + Date.now();
+    var iframe = document.createElement("iframe");
+    iframe.name = iframeName;
+    iframe.style.display = "none";
+    document.body.appendChild(iframe);
+
+    var form = document.createElement("form");
+    form.method = "POST";
+    form.action = APPS_SCRIPT_URL;
+    form.target = iframeName;
+    form.style.display = "none";
+
+    var input = document.createElement("input");
+    input.type  = "hidden";
+    input.name  = "payload";
+    input.value = JSON.stringify(payload);
+    form.appendChild(input);
+    document.body.appendChild(form);
+    form.submit();
+
+    // Callback after giving it time to submit
+    setTimeout(function(){
+      try { document.body.removeChild(form); document.body.removeChild(iframe); } catch(e){}
+      if (callback) callback();
+    }, 2000);
+
+  } catch(err) {
+    console.warn("Sync error:", err);
+    if (callback) callback();
+  }
+}
+
+// ── CSV ──
+function uploadCSV() {
+  var file = document.getElementById("csvFile").files[0];
+  if (!file) { toast("Select a CSV file first.", "error"); return; }
+  var reader = new FileReader();
+  reader.onload = function(evt){
+    var lines   = evt.target.result.split("\n").filter(function(l){ return l.trim(); });
+    var headers = lines[0].split(",").map(function(h){ return h.trim().replace(/^"|"$/g,""); });
+    var added=0, updated=0;
+    for (var i=1; i<lines.length; i++) {
+      var vals = lines[i].split(",").map(function(v){ return v.trim().replace(/^"|"$/g,""); });
+      var obj  = {};
+      headers.forEach(function(h,idx){ obj[h] = vals[idx] || ""; });
+      if (!obj.Ecode) continue;
+      var ex = employees.findIndex(function(x){ return x.Ecode === obj.Ecode; });
+      if (ex >= 0){ employees[ex] = Object.assign({},employees[ex],obj); updated++; }
+      else { employees.push(obj); added++; }
+    }
+    updateDashboard(); renderTable();
+    toast("✅ Added: " + added + " | Updated: " + updated, "success");
+  };
+  reader.readAsText(file);
+}
+
+function downloadMIS() {
+  if (!employees.length) { toast("No data to export.", "error"); return; }
+  var headers = ["Ecode","Name","Mobile","Department","Designation","Location","Region","DOJ","Onboarded Date","BGV Done","BGV Report Generated","ID Card Sent","Mail ID Created","Mail Created Date","Mail ID","Omnifin Required","Omnifin Created Date","Asset Required","IMEI Number"];
+  var csv = "\uFEFF" + headers.join(",") + "\r\n";
+  employees.forEach(function(e){
+    csv += headers.map(function(h){ return '"'+(e[h]||"").replace(/"/g,'""')+'"'; }).join(",") + "\r\n";
+  });
+  var blob = new Blob([csv],{type:"text/csv;charset=utf-8;"});
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement("a");
+  a.href   = url;
+  a.setAttribute("download","HR_Onboarding_MIS_"+new Date().toISOString().slice(0,10)+".csv");
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); },1000);
+  toast("📥 MIS downloaded!", "success");
+}
+
+// ── INIT ──
+updateDashboard();
+renderTable();
+</script>
+</body>
+</html>
