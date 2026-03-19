@@ -12,12 +12,10 @@
   --text2:#8b949e;--text3:#6e7681;--green:#22c55e;--red:#ef4444;--yellow:#f59e0b;--blue:#3b82f6;--purple:#a855f7;
 }
 body{font-family:'Segoe UI',Inter,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
-
-/* HEADER */
 header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 12px rgba(0,0,0,.3);}
 .logo{display:flex;align-items:center;gap:10px;}
 .logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),#e8890a);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;}
-.logo-text{font-size:16px;font-weight:700;} .logo-text span{color:var(--accent);}
+.logo-text{font-size:16px;font-weight:700;}.logo-text span{color:var(--accent);}
 .header-right{display:flex;align-items:center;gap:12px;}
 .live-dot{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);}
 .live-dot::before{content:'';width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 5px var(--green);animation:pulse 2s infinite;}
@@ -31,16 +29,12 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .rb-it{background:rgba(59,130,246,.15);color:var(--blue);border:1px solid rgba(59,130,246,.3);}
 .rb-admin{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3);}
 .access-tag{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:.4px;}
-
-/* TOAST */
 .toast{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px;}
 .toast-item{padding:12px 18px;border-radius:8px;font-size:13px;font-weight:500;box-shadow:0 4px 20px rgba(0,0,0,.4);animation:slideIn .3s ease;max-width:320px;}
 @keyframes slideIn{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}
 .toast-success{background:#14532d;border:1px solid var(--green);color:#bbf7d0;}
 .toast-error{background:#450a0a;border:1px solid var(--red);color:#fecaca;}
 .toast-info{background:#1e3a5f;border:1px solid var(--blue);color:#bfdbfe;}
-
-/* LAYOUT */
 .layout{display:flex;min-height:calc(100vh - 58px);}
 .sidebar{width:210px;background:var(--surface);border-right:1px solid var(--border);padding:16px 0;flex-shrink:0;}
 .sidebar-section{padding:6px 16px 3px;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-weight:600;}
@@ -49,15 +43,11 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .nav-item.active{background:rgba(245,166,35,.08);color:var(--accent);border-left-color:var(--accent);}
 .nav-icon{font-size:14px;width:18px;text-align:center;}
 .main{flex:1;padding:22px;overflow-y:auto;min-width:0;}
-
-/* SECTION */
 .section-header{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
 .section-bar{width:3px;height:17px;background:var(--accent);border-radius:2px;flex-shrink:0;}
 .section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:18px;overflow-x:auto;}
 .card+.card,.card+div{margin-top:14px;}
-
-/* METRICS */
 .metrics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;margin-bottom:14px;}
 .metric-card{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:14px 16px;position:relative;overflow:hidden;}
 .metric-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
@@ -70,11 +60,9 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .metric-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;font-weight:600;}
 .metric-value{font-size:26px;font-weight:800;line-height:1;}
 .metric-sub{font-size:10px;color:var(--text3);margin-top:5px;}
-.mc-orange .metric-value{color:var(--accent);} .mc-red .metric-value{color:var(--red);}
-.mc-green .metric-value{color:var(--green);} .mc-blue .metric-value{color:var(--blue);}
-.mc-yellow .metric-value{color:var(--yellow);} .mc-purple .metric-value{color:var(--purple);}
-
-/* RING */
+.mc-orange .metric-value{color:var(--accent);}.mc-red .metric-value{color:var(--red);}
+.mc-green .metric-value{color:var(--green);}.mc-blue .metric-value{color:var(--blue);}
+.mc-yellow .metric-value{color:var(--yellow);}.mc-purple .metric-value{color:var(--purple);}
 .progress-ring{display:flex;align-items:center;gap:12px;}
 .ring-wrap{position:relative;width:50px;height:50px;flex-shrink:0;}
 .ring-wrap svg{transform:rotate(-90deg);}
@@ -84,10 +72,7 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .region-bars{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .region-bar-item{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;}
 .rb-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
-.rb-name{font-size:11px;color:var(--text2);font-weight:600;}
-.rb-count{font-size:13px;font-weight:700;}
-
-/* FORM */
+.rb-name{font-size:11px;color:var(--text2);font-weight:600;}.rb-count{font-size:13px;font-weight:700;}
 .form-section-title{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;font-weight:700;margin:16px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--border);}
 .form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;}
 .field{display:flex;flex-direction:column;gap:3px;}
@@ -98,14 +83,12 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .field select option{background:var(--surface3);}
 .required-star{color:var(--red);margin-left:2px;}
 .btn{display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:7px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:all .15s;}
-.btn-primary{background:var(--accent);color:#000;} .btn-primary:hover{background:#e8890a;}
-.btn-secondary{background:var(--surface3);color:var(--text);border:1px solid var(--border);} .btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
-.btn-success{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3);} .btn-success:hover{background:rgba(34,197,94,.25);}
-.btn-danger{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3);} .btn-danger:hover{background:rgba(239,68,68,.25);}
+.btn-primary{background:var(--accent);color:#000;}.btn-primary:hover{background:#e8890a;}
+.btn-secondary{background:var(--surface3);color:var(--text);border:1px solid var(--border);}.btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+.btn-success{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3);}.btn-success:hover{background:rgba(34,197,94,.25);}
+.btn-danger{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3);}.btn-danger:hover{background:rgba(239,68,68,.25);}
 .btn-row{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;align-items:center;}
 .saving-spinner{display:none;font-size:12px;color:var(--text3);}
-
-/* TABLE */
 .table-toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;}
 .table-toolbar input,.table-toolbar select{background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:7px 10px;border-radius:7px;font-size:12px;outline:none;}
 .table-toolbar input{min-width:200px;}
@@ -126,28 +109,22 @@ tr:hover td{background:rgba(255,255,255,.02);}
 .prog-fill{height:4px;border-radius:4px;transition:width .4s;}
 .prog-label{font-size:10px;color:var(--text3);}
 .empty-row td{text-align:center;padding:36px;color:var(--text3);font-size:13px;}
-
-/* MODAL */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
 .overlay.open{display:flex;}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:26px;width:360px;box-shadow:0 20px 60px rgba(0,0,0,.5);}
 .modal h3{font-size:15px;margin-bottom:5px;}
 .modal p{font-size:13px;color:var(--text2);margin-bottom:14px;}
-.modal input{width:100%;background:var(--surface3);color:var(--text);border:1px solid var(--border);padding:10px;border-radius:7px;font-size:14px;outline:none;margin-bottom:14px;}
+.modal input{width:100%;background:var(--surface3);color:var(--text);border:1px solid var(--border);padding:10px;border-radius:7px;font-size:14px;outline:none;margin-bottom:6px;}
 .modal input:focus{border-color:var(--accent);}
-.pw-error{font-size:12px;color:var(--red);margin-top:-10px;margin-bottom:10px;display:none;}
-
-/* TAB */
+.pw-error{font-size:12px;color:var(--red);margin-bottom:12px;display:none;}
 .tab-content{display:none;}
 .tab-content.active{display:block;}
 </style>
 </head>
 <body>
 
-<!-- TOAST CONTAINER -->
 <div class="toast" id="toastContainer"></div>
 
-<!-- PASSWORD MODAL -->
 <div class="overlay" id="pwOverlay">
   <div class="modal">
     <h3>🔒 Restricted Access</h3>
@@ -171,7 +148,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
     <div style="display:flex;align-items:center;gap:8px;">
       <span style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;">View</span>
       <div class="role-select-wrap">
-        <select id="roleSelect" onchange="changeRole()">
+        <select id="roleSelect" onchange="handleRoleChange()">
           <option value="department">Department View</option>
           <option value="hr">HR View</option>
           <option value="it">IT View</option>
@@ -189,8 +166,8 @@ tr:hover td{background:rgba(255,255,255,.02);}
     <div class="sidebar-section">Main</div>
     <div class="nav-item active" id="nav-dashboard" onclick="showTab('dashboard')"><span class="nav-icon">📊</span>Dashboard</div>
     <div class="nav-item" id="nav-tracker" onclick="showTab('tracker')"><span class="nav-icon">📋</span>Joiner Tracker</div>
-    <div class="nav-item" id="nav-add" onclick="showTab('add')" style="display:none;"><span class="nav-icon">➕</span>Add Joiner</div>
-    <div class="nav-item" id="nav-upload" onclick="showTab('upload')" style="display:none;"><span class="nav-icon">📂</span>Bulk Upload</div>
+    <div class="nav-item" id="nav-add" onclick="showTab('add')"><span class="nav-icon">➕</span>Add Joiner</div>
+    <div class="nav-item" id="nav-upload" onclick="showTab('upload')"><span class="nav-icon">📂</span>Bulk Upload</div>
     <div class="sidebar-section" style="margin-top:14px;">Regions</div>
     <div class="nav-item" onclick="filterByRegion('North 1')"><span class="nav-icon">🔵</span>North 1</div>
     <div class="nav-item" onclick="filterByRegion('North 2')"><span class="nav-icon">🟣</span>North 2</div>
@@ -244,7 +221,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
       </div>
       <div class="card">
         <div class="table-toolbar">
-          <input id="searchInput" placeholder="🔍  Search name or Ecode..." oninput="renderTable()">
+          <input id="searchInput" placeholder="🔍 Search name or Ecode..." oninput="renderTable()">
           <select id="filterRegion" onchange="renderTable()"><option value="">All Regions</option><option>North 1</option><option>North 2</option><option>South</option><option>West</option></select>
           <select id="filterBGV" onchange="renderTable()"><option value="">BGV: All</option><option value="Yes">Done</option><option value="No">Pending</option></select>
           <select id="filterStatus" onchange="renderTable()"><option value="">Status: All</option><option value="complete">Completed</option><option value="incomplete">Incomplete</option></select>
@@ -255,7 +232,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
             <tr>
               <th>Ecode</th><th>Name</th><th>Dept</th><th>Region</th><th>DOJ</th>
               <th>BGV</th><th>Email</th><th>Omnifin</th><th>ID Card</th>
-              <th>Progress</th>              <th>IMEI</th><th id="actionTh">Actions</th>
+              <th>Progress</th><th>IMEI</th><th id="actionTh">Actions</th>
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
@@ -316,18 +293,18 @@ tr:hover td{background:rgba(255,255,255,.02);}
         </div>
         <div style="border-top:1px solid var(--border);padding-top:16px;">
           <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Export MIS</div>
-          <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Downloads full onboarding data as CSV with today's date.</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Downloads full onboarding data as CSV.</div>
           <button class="btn btn-success" onclick="downloadMIS()">⬇ Download MIS Report</button>
         </div>
         <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:4px;">
           <div style="font-size:13px;font-weight:600;margin-bottom:4px;">📸 Bulk IMEI Screenshot Upload</div>
-          <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">
-            Select multiple JPG/PNG files. Files must be named exactly as the <strong style="color:var(--accent);">Ecode</strong> (e.g. <code style="background:var(--surface3);padding:2px 5px;border-radius:4px;">2222.jpg</code>, <code style="background:var(--surface3);padding:2px 5px;border-radius:4px;">EMP001.png</code>). Each image will be uploaded to Drive and linked to the matching employee.
-          </div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Files must be named as Ecode (e.g. <code style="background:var(--surface3);padding:2px 5px;border-radius:4px;">2222.jpg</code>).</div>
           <input type="file" id="imeiFiles" accept="image/*" multiple style="background:var(--surface3);color:var(--text);border:1px solid var(--border);padding:8px 10px;border-radius:7px;font-size:13px;width:100%;">
           <button class="btn btn-primary" style="margin-top:10px;" onclick="uploadBulkIMEI()">📸 Upload IMEI Screenshots</button>
           <div id="imeiUploadStatus" style="margin-top:10px;font-size:12px;color:var(--text3);"></div>
         </div>
+        <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:4px;">
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Expected CSV Headers</div>
           <div style="font-size:11px;color:var(--text3);line-height:1.8;background:var(--surface2);padding:10px;border-radius:6px;font-family:monospace;">
             Ecode, Name, Mobile, Department, Designation, Location, Region, DOJ, Onboarded Date, BGV Done, BGV Report Generated, ID Card Sent, Mail ID Created, Mail Created Date, Mail ID, Omnifin Required, Omnifin Created Date, Asset Required, IMEI Number
           </div>
@@ -339,24 +316,22 @@ tr:hover td{background:rgba(255,255,255,.02);}
 </div>
 
 <script>
-var employees  = [];
-var role       = "department";
-var pendingRole= "";
-var PASSWORDS  = { hr:"1234", it:"1234", admin:"1234" };
+var employees   = [];
+var role        = "department";
+var pendingRole = "";
+var PASSWORDS   = { hr:"1234", it:"1234", admin:"1234" };
 var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxf8p6RK3ivt17G8V5qWRa8KvLBLOcyafCeG0xuelW72cB8-PlEJxwr7Q5mQ4q8d_AfyA/exec";
 
-// ── TOAST ──
 function toast(msg, type) {
   var c = document.getElementById("toastContainer");
   var t = document.createElement("div");
   t.className = "toast-item toast-" + (type || "info");
   t.innerText = msg;
   c.appendChild(t);
-  setTimeout(function(){ t.style.opacity="0"; t.style.transition="opacity .4s"; setTimeout(function(){ c.removeChild(t); }, 400); }, 3500);
+  setTimeout(function(){ t.style.opacity="0"; t.style.transition="opacity .4s"; setTimeout(function(){ if(t.parentNode)c.removeChild(t); },400); },3500);
 }
 
-// ── ROLE ──
-function changeRole() {
+function handleRoleChange() {
   var r = document.getElementById("roleSelect").value;
   if (r === "department") { role = "department"; applyRole(); return; }
   pendingRole = r;
@@ -379,7 +354,7 @@ function submitPw() {
     document.getElementById("pwInput").value = "";
     document.getElementById("pwInput").style.borderColor = "var(--red)";
     document.getElementById("pwError").style.display = "block";
-    setTimeout(function(){ document.getElementById("pwInput").style.borderColor="var(--border)"; }, 1500);
+    setTimeout(function(){ document.getElementById("pwInput").style.borderColor = "var(--border)"; }, 1500);
   }
 }
 
@@ -397,20 +372,26 @@ function applyRole() {
   badge.innerText = labelMap[role];
   var tag = document.getElementById("accessTag");
   if (isDept) {
-    tag.innerText="READ-ONLY"; tag.style.color="var(--accent)";
-    tag.style.borderColor="rgba(245,166,35,.3)"; tag.style.background="rgba(245,166,35,.1)";
+    tag.innerText = "READ-ONLY";
+    tag.style.color = "var(--accent)";
+    tag.style.borderColor = "rgba(245,166,35,.3)";
+    tag.style.background = "rgba(245,166,35,.1)";
   } else {
-    tag.innerText="EDIT ACCESS"; tag.style.color="var(--green)";
-    tag.style.borderColor="rgba(34,197,94,.3)"; tag.style.background="rgba(34,197,94,.1)";
+    tag.innerText = "EDIT ACCESS";
+    tag.style.color = "var(--green)";
+    tag.style.borderColor = "rgba(34,197,94,.3)";
+    tag.style.background = "rgba(34,197,94,.1)";
   }
   document.getElementById("nav-add").style.display    = isDept ? "none" : "";
   document.getElementById("nav-upload").style.display = isDept ? "none" : "";
   document.getElementById("actionTh").style.display   = isDept ? "none" : "";
-  if (isDept) showTab("dashboard");
+  if (isDept && (document.getElementById("tab-add").classList.contains("active") ||
+      document.getElementById("tab-upload").classList.contains("active"))) {
+    showTab("dashboard");
+  }
   renderTable();
 }
 
-// ── TABS ──
 function showTab(name) {
   document.querySelectorAll(".tab-content").forEach(function(t){ t.classList.remove("active"); });
   document.querySelectorAll(".nav-item").forEach(function(n){ n.classList.remove("active"); });
@@ -421,10 +402,10 @@ function showTab(name) {
 
 function filterByRegion(r) {
   document.getElementById("filterRegion").value = r;
-  showTab("tracker"); renderTable();
+  showTab("tracker");
+  renderTable();
 }
 
-// ── HELPERS ──
 function isComplete(e) {
   return e["Mail ID Created"] === "Yes" &&
          e["ID Card Sent"] === "Yes" &&
@@ -440,11 +421,10 @@ function calcProgress(e) {
   return Math.round(done / 4 * 100);
 }
 
-function formatDate(val) {
-  if (!val) return "—";
-  var d = new Date(val);
-  if (isNaN(d.getTime())) return val;
-  return d.getDate().toString().padStart(2,"0") + "-" + (d.getMonth()+1).toString().padStart(2,"0") + "-" + d.getFullYear();
+function mkBadge(v, naLabel) {
+  if (v === "Yes") return '<span class="badge b-done">Done</span>';
+  if (v === "No")  return '<span class="badge b-pending">Pending</span>';
+  return '<span class="badge b-na">' + (naLabel || "N/A") + '</span>';
 }
 
 function safeVal(e, keys) {
@@ -453,17 +433,18 @@ function safeVal(e, keys) {
   }
   return "";
 }
-  if (v === "Yes") return '<span class="badge b-done">Done</span>';
-  if (v === "No")  return '<span class="badge b-pending">Pending</span>';
-  return '<span class="badge b-na">' + (naLabel || "N/A") + '</span>';
+
+function formatDate(val) {
+  if (!val) return "—";
+  var d = new Date(val);
+  if (isNaN(d.getTime())) return val;
+  return d.getDate().toString().padStart(2,"0") + "-" + (d.getMonth()+1).toString().padStart(2,"0") + "-" + d.getFullYear();
 }
 
-// ── SAVE ──
 function saveJoiner() {
   var ecode = document.getElementById("ecode").value.trim();
   var name  = document.getElementById("name").value.trim();
   if (!ecode || !name) { toast("Ecode and Name are required.", "error"); return; }
-
   var e = {
     "Ecode": ecode, "Name": name,
     "Mobile": document.getElementById("mobile").value,
@@ -484,75 +465,66 @@ function saveJoiner() {
     "Asset Required": document.getElementById("assetReq").value,
     "IMEI Number": document.getElementById("imeiNumber").value
   };
-
-  var idx   = employees.findIndex(function(x){ return x.Ecode === ecode; });
+  var idx   = employees.findIndex(function(x){ return String(x.Ecode) === String(ecode); });
   var isNew = idx < 0;
   if (isNew) employees.push(e); else employees[idx] = e;
-
-  // Show spinner
   document.getElementById("savingSpinner").style.display = "inline";
   document.getElementById("saveBtn").disabled = true;
+  var imeiFile = document.getElementById("imeiFile").files[0];
+  if (imeiFile) {
+    var reader = new FileReader();
+    reader.onload = function(evt) {
+      e["IMEI Screenshot Base64"] = evt.target.result.split(",")[1];
+      e["IMEI Screenshot Name"]   = imeiFile.name;
+      e["IMEI Screenshot Type"]   = imeiFile.type;
+      sendAndFinish(e, isNew);
+    };
+    reader.readAsDataURL(imeiFile);
+  } else {
+    sendAndFinish(e, isNew);
+  }
+}
 
+function sendAndFinish(e, isNew) {
   postToSheet({ action: isNew ? "add" : "update", data: e }, function(){
     document.getElementById("savingSpinner").style.display = "none";
     document.getElementById("saveBtn").disabled = false;
-    toast(isNew ? "✅ Joiner saved & IT notified!" : "✅ Joiner updated successfully!", "success");
+    toast(isNew ? "✅ Joiner saved & IT notified!" : "✅ Joiner updated!", "success");
     clearForm(); updateDashboard(); renderTable(); showTab("tracker");
+    setTimeout(loadFromSheet, 3000);
   });
 }
 
 function editRow(ecode) {
   var e = employees.find(function(x){ return String(x.Ecode) === String(ecode); });
   if (!e) { toast("Record not found.", "error"); return; }
-
-  function setVal(id, keys) {
+  var map = {
+    ecode:"Ecode", name:"Name", mobile:"Mobile", department:"Department",
+    designation:"Designation", location:"Location", region:"Region",
+    doj:"DOJ", onboardDate:"Onboarded Date", bgvDone:"BGV Done",
+    bgvReport:"BGV Report Generated", idSent:"ID Card Sent",
+    emailCreated:"Mail ID Created", emailDate:"Mail Created Date",
+    emailId:"Mail ID", omnifinReq:"Omnifin Required",
+    omnifinDate:"Omnifin Created Date", assetReq:"Asset Required",
+    imeiNumber:"IMEI Number"
+  };
+  Object.keys(map).forEach(function(id){
     var el = document.getElementById(id);
     if (!el) return;
-    for (var i = 0; i < keys.length; i++) {
-      if (e[keys[i]] !== undefined && e[keys[i]] !== "") {
-        var val = e[keys[i]];
-        // Format dates from sheet timestamp
-        if (el.type === "date" && val) {
-          var d = new Date(val);
-          if (!isNaN(d.getTime())) {
-            val = d.toISOString().slice(0,10);
-          }
-        }
-        el.value = val;
-        return;
-      }
+    var val = e[map[id]] || "";
+    if (el.type === "date" && val) {
+      var d = new Date(val);
+      if (!isNaN(d.getTime())) val = d.toISOString().slice(0,10);
     }
-    el.value = "";
-  }
-
-  setVal("ecode",        ["Ecode"]);
-  setVal("name",         ["Name"]);
-  setVal("mobile",       ["Mobile"]);
-  setVal("department",   ["Department"]);
-  setVal("designation",  ["Designation"]);
-  setVal("location",     ["Location"]);
-  setVal("region",       ["Region"]);
-  setVal("doj",          ["DOJ"]);
-  setVal("onboardDate",  ["Onboarded Date","Onboarded_Date"]);
-  setVal("bgvDone",      ["BGV Done","BGV_Done"]);
-  setVal("bgvReport",    ["BGV Report Generated","BGV_Report_Generated"]);
-  setVal("idSent",       ["ID Card Sent","ID_Card_Sent"]);
-  setVal("emailCreated", ["Mail ID Created","Mail_ID_Created"]);
-  setVal("emailDate",    ["Mail Created Date","Mail_Created_Date"]);
-  setVal("emailId",      ["Mail ID","Mail_ID"]);
-  setVal("omnifinReq",   ["Omnifin Required","Omnifin_Required"]);
-  setVal("omnifinDate",  ["Omnifin Created Date","Omnifin_Created_Date"]);
-  setVal("assetReq",     ["Asset Required","Asset_Required"]);
-  setVal("imeiNumber",   ["IMEI Number","IMEI_Number"]);
-
+    el.value = val;
+  });
   document.getElementById("formTitle").innerText = "✏️ Edit — " + e.Name;
   showTab("add");
 }
 
 function deleteRow(ecode) {
-  if (!confirm("Delete record for Ecode: " + ecode + "? This cannot be undone.")) return;
+  if (!confirm("Delete record for Ecode: " + ecode + "?")) return;
   employees = employees.filter(function(e){ return String(e.Ecode) !== String(ecode); });
-  // Also delete from sheet
   postToSheet({ action: "delete", data: { Ecode: ecode } }, function(){
     toast("🗑 Record deleted.", "info");
   });
@@ -569,14 +541,13 @@ function clearForm() {
   document.getElementById("formTitle").innerText = "Add New Joiner";
 }
 
-// ── TABLE ──
 function getFiltered() {
   var q  = document.getElementById("searchInput").value.toLowerCase();
   var rg = document.getElementById("filterRegion").value;
   var fb = document.getElementById("filterBGV").value;
   var fs = document.getElementById("filterStatus").value;
   return employees.filter(function(e){
-    if (q && !e.Name.toLowerCase().includes(q) && !e.Ecode.toLowerCase().includes(q)) return false;
+    if (q && !e.Name.toLowerCase().includes(q) && !String(e.Ecode).toLowerCase().includes(q)) return false;
     if (rg && e.Region !== rg) return false;
     if (fb && e["BGV Done"] !== fb) return false;
     if (fs === "complete"   && !isComplete(e)) return false;
@@ -592,38 +563,46 @@ function renderTable() {
   var isDept = role === "department";
   body.innerHTML = "";
   if (!filtered.length) {
-    body.innerHTML = '<tr class="empty-row"><td colspan="11">No records found. Add joiners to get started.</td></tr>';
+    body.innerHTML = '<tr class="empty-row"><td colspan="12">No records found.</td></tr>';
     return;
   }
   filtered.forEach(function(e){
-    var p      = calcProgress(e);
-    var pColor = p === 100 ? "var(--green)" : p >= 50 ? "var(--yellow)" : "var(--red)";
-          var imeiUrl  = safeVal(e, ["IMEI Screenshot","IMEI_Screenshot","IMEIScreenshot"]);
-      var imeiLink = imeiUrl
-        ? '<a href="' + imeiUrl + '" target="_blank" style="color:var(--blue);font-size:11px;text-decoration:none;">🖼 View</a>'
-        : '<span style="color:var(--text3);font-size:11px;">—</span>';
-    var tr     = document.createElement("tr");
+    var p       = calcProgress(e);
+    var pColor  = p === 100 ? "var(--green)" : p >= 50 ? "var(--yellow)" : "var(--red)";
+    var done    = isComplete(e);
+    var region  = safeVal(e, ["Region","region"]);
+    var doj     = formatDate(safeVal(e, ["DOJ","doj"]));
+    var bgv     = safeVal(e, ["BGV Done"]);
+    var email   = safeVal(e, ["Mail ID Created"]);
+    var omnifin = safeVal(e, ["Omnifin Required"]);
+    var idcard  = safeVal(e, ["ID Card Sent"]);
+    var dept    = safeVal(e, ["Department","department"]);
+    var imeiUrl = safeVal(e, ["IMEI Screenshot","IMEI_Screenshot"]);
+    var imeiLink = imeiUrl
+      ? '<a href="' + imeiUrl + '" target="_blank" style="color:var(--blue);font-size:11px;text-decoration:none;">🖼 View</a>'
+      : '<span style="color:var(--text3);font-size:11px;">—</span>';
+    var ecodeSafe = String(e.Ecode).replace(/'/g,"\\'");
+    var tr = document.createElement("tr");
     tr.innerHTML =
       '<td class="ecode-cell">' + e.Ecode + '</td>' +
       '<td class="name-cell">' + e.Name + (done ? ' <span style="color:var(--green);font-size:10px;">✓</span>' : '') + '</td>' +
-      '<td>' + (e.Department || "—") + '</td>' +
-      '<td>' + e.Region + '</td>' +
-      '<td style="color:var(--text3);">' + (e.DOJ || "—") + '</td>' +
-      '<td>' + mkBadge(e["BGV Done"]) + '</td>' +
-      '<td>' + mkBadge(e["Mail ID Created"]) + '</td>' +
-      '<td>' + mkBadge(e["Omnifin Required"], "N/Req") + '</td>' +
-      '<td>' + mkBadge(e["ID Card Sent"]) + '</td>' +
+      '<td>' + (dept || "—") + '</td>' +
+      '<td>' + (region || "—") + '</td>' +
+      '<td style="color:var(--text3);">' + doj + '</td>' +
+      '<td>' + mkBadge(bgv) + '</td>' +
+      '<td>' + mkBadge(email) + '</td>' +
+      '<td>' + mkBadge(omnifin,"N/Req") + '</td>' +
+      '<td>' + mkBadge(idcard) + '</td>' +
       '<td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill" style="width:' + p + '%;background:' + pColor + '"></div></div><div class="prog-label">' + p + '%</div></div></td>' +
       '<td>' + imeiLink + '</td>' +
       '<td style="' + (isDept ? 'display:none' : '') + '">' +
-        '<button class="btn btn-success" style="padding:4px 9px;font-size:11px;" onclick="editRow(\'' + e.Ecode + '\')">Edit</button>' +
-        (role === "admin" ? ' <button class="btn btn-danger" style="padding:4px 9px;font-size:11px;" onclick="deleteRow(\'' + e.Ecode + '\')">Del</button>' : '') +
+        '<button class="btn btn-success" style="padding:4px 9px;font-size:11px;" onclick="editRow(\'' + ecodeSafe + '\')">Edit</button>' +
+        ' <button class="btn btn-danger" style="padding:4px 9px;font-size:11px;" onclick="deleteRow(\'' + ecodeSafe + '\')">Del</button>' +
       '</td>';
     body.appendChild(tr);
   });
 }
 
-// ── DASHBOARD ──
 function updateDashboard() {
   var t = employees.length;
   var bgv=0,email=0,omnifin=0,idcard=0,complete=0,r1=0,r2=0,s=0,w=0;
@@ -638,19 +617,17 @@ function updateDashboard() {
     if (e.Region==="South") s++;
     if (e.Region==="West") w++;
   });
-  document.getElementById("m-total").innerText   = t;
-  document.getElementById("m-complete").innerText= complete;
-  document.getElementById("m-bgv").innerText     = bgv;
-  document.getElementById("m-email").innerText   = email;
-  document.getElementById("m-omnifin").innerText = omnifin;
-  document.getElementById("m-idcard").innerText  = idcard;
-
+  document.getElementById("m-total").innerText    = t;
+  document.getElementById("m-complete").innerText = complete;
+  document.getElementById("m-bgv").innerText      = bgv;
+  document.getElementById("m-email").innerText    = email;
+  document.getElementById("m-omnifin").innerText  = omnifin;
+  document.getElementById("m-idcard").innerText   = idcard;
   var pct  = t ? Math.round(complete/t*100) : 0;
   var circ = 125.6;
   document.getElementById("ringCircle").style.strokeDashoffset = circ - (circ * pct / 100);
-  document.getElementById("ringPct").innerText  = pct + "%";
-  document.getElementById("ringLabel").innerText= complete + " of " + t + " completed";
-
+  document.getElementById("ringPct").innerText   = pct + "%";
+  document.getElementById("ringLabel").innerText = complete + " of " + t + " completed";
   var checks = [
     {label:"BGV Done",     done:t-bgv,    color:"var(--green)"},
     {label:"Email Created",done:t-email,  color:"var(--blue)"},
@@ -661,15 +638,13 @@ function updateDashboard() {
     var p2 = t ? Math.round(c.done/t*100) : 0;
     return '<div><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:3px;"><span>'+c.label+'</span><span style="color:var(--text);font-weight:600;">'+c.done+'/'+t+'</span></div><div class="bar-track"><div class="bar-fill" style="width:'+p2+'%;background:'+c.color+';"></div></div></div>';
   }).join("");
-
-  var regions=[{name:"North 1",count:r1,color:"var(--blue)"},{name:"North 2",count:r2,color:"var(--purple)"},{name:"South",count:s,color:"var(--green)"},{name:"West",count:w,color:"var(--yellow)"}];
+  var regions = [{name:"North 1",count:r1,color:"var(--blue)"},{name:"North 2",count:r2,color:"var(--purple)"},{name:"South",count:s,color:"var(--green)"},{name:"West",count:w,color:"var(--yellow)"}];
   var maxR = Math.max(r1,r2,s,w,1);
   document.getElementById("regionBars").innerHTML = regions.map(function(r){
     return '<div class="region-bar-item"><div class="rb-top"><span class="rb-name">'+r.name+'</span><span class="rb-count">'+r.count+'</span></div><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(r.count/maxR*100)+'%;background:'+r.color+';"></div></div></div>';
   }).join("");
 }
 
-// ── APPS SCRIPT SYNC via hidden form ──
 function postToSheet(payload, callback) {
   try {
     var iframeName = "hs_" + Date.now();
@@ -677,13 +652,11 @@ function postToSheet(payload, callback) {
     iframe.name = iframeName;
     iframe.style.display = "none";
     document.body.appendChild(iframe);
-
     var form = document.createElement("form");
     form.method = "POST";
     form.action = APPS_SCRIPT_URL;
     form.target = iframeName;
     form.style.display = "none";
-
     var input = document.createElement("input");
     input.type  = "hidden";
     input.name  = "payload";
@@ -691,77 +664,42 @@ function postToSheet(payload, callback) {
     form.appendChild(input);
     document.body.appendChild(form);
     form.submit();
-
-    // Callback after giving it time to submit
     setTimeout(function(){
       try { document.body.removeChild(form); document.body.removeChild(iframe); } catch(e){}
       if (callback) callback();
     }, 2000);
-
   } catch(err) {
     console.warn("Sync error:", err);
     if (callback) callback();
   }
 }
 
-// ── CSV ──
-function uploadBulkIMEI() {
-  var files = document.getElementById("imeiFiles").files;
-  if (!files.length) { toast("Select at least one image file.", "error"); return; }
-
-  var status = document.getElementById("imeiUploadStatus");
-  var total  = files.length;
-  var done   = 0;
-  var failed = [];
-  status.innerHTML = "⏳ Uploading 0 of " + total + "...";
-
-  Array.from(files).forEach(function(file) {
-    // Extract Ecode from filename (remove extension)
-    var ecode = file.name.replace(/\.[^/.]+$/, "").trim();
-    var match = employees.find(function(e){ return String(e.Ecode) === String(ecode); });
-
-    if (!match) {
-      failed.push(file.name + " (Ecode " + ecode + " not found)");
-      done++;
-      status.innerHTML = "⏳ Uploading " + done + " of " + total + "...";
-      if (done === total) finishBulkIMEI(total, failed, status);
-      return;
+function loadFromSheet() {
+  var callbackName = "sheetCB_" + Date.now();
+  var script = document.createElement("script");
+  var done = false;
+  window[callbackName] = function(data) {
+    done = true;
+    if (Array.isArray(data) && data.length > 0) {
+      employees = data;
+      updateDashboard();
+      renderTable();
+      toast("✅ " + data.length + " records loaded", "success");
+    } else {
+      toast("📋 No records yet — add your first joiner!", "info");
     }
-
-    var reader = new FileReader();
-    reader.onload = function(evt) {
-      var base64 = evt.target.result.split(",")[1];
-      postToSheet({
-        action: "imei_upload",
-        data: {
-          Ecode: ecode,
-          "IMEI Screenshot Base64": base64,
-          "IMEI Screenshot Name": file.name,
-          "IMEI Screenshot Type": file.type
-        }
-      }, function(){
-        done++;
-        status.innerHTML = "⏳ Uploading " + done + " of " + total + "...";
-        if (done === total) {
-          finishBulkIMEI(total, failed, status);
-          setTimeout(loadFromSheet, 2000);
-        }
-      });
-    };
-    reader.readAsDataURL(file);
-  });
+    delete window[callbackName];
+    if (script.parentNode) document.body.removeChild(script);
+  };
+  script.onerror = function() {
+    if (!done) toast("⚠️ Could not reach sheet.", "error");
+    delete window[callbackName];
+  };
+  script.src = APPS_SCRIPT_URL + "?callback=" + callbackName + "&t=" + Date.now();
+  document.body.appendChild(script);
 }
 
-function finishBulkIMEI(total, failed, status) {
-  var success = total - failed.length;
-  if (failed.length === 0) {
-    status.innerHTML = '<span style="color:var(--green);">✅ All ' + total + ' screenshots uploaded successfully!</span>';
-    toast("✅ " + total + " IMEI screenshots uploaded!", "success");
-  } else {
-    status.innerHTML = '<span style="color:var(--green);">✅ ' + success + ' uploaded.</span> <span style="color:var(--red);">❌ Failed: ' + failed.join(", ") + '</span>';
-    toast(success + " uploaded, " + failed.length + " failed.", "error");
-  }
-}
+function uploadCSV() {
   var file = document.getElementById("csvFile").files[0];
   if (!file) { toast("Select a CSV file first.", "error"); return; }
   var reader = new FileReader();
@@ -774,7 +712,7 @@ function finishBulkIMEI(total, failed, status) {
       var obj  = {};
       headers.forEach(function(h,idx){ obj[h] = vals[idx] || ""; });
       if (!obj.Ecode) continue;
-      var ex = employees.findIndex(function(x){ return x.Ecode === obj.Ecode; });
+      var ex = employees.findIndex(function(x){ return String(x.Ecode) === String(obj.Ecode); });
       if (ex >= 0){ employees[ex] = Object.assign({},employees[ex],obj); updated++; }
       else { employees.push(obj); added++; }
     }
@@ -784,12 +722,50 @@ function finishBulkIMEI(total, failed, status) {
   reader.readAsText(file);
 }
 
+function uploadBulkIMEI() {
+  var files = document.getElementById("imeiFiles").files;
+  if (!files.length) { toast("Select at least one image.", "error"); return; }
+  var status = document.getElementById("imeiUploadStatus");
+  var total=files.length, done=0, failed=[];
+  status.innerHTML = "⏳ Uploading 0 of " + total + "...";
+  Array.from(files).forEach(function(file){
+    var ecode = file.name.replace(/\.[^/.]+$/,"").trim();
+    var match = employees.find(function(e){ return String(e.Ecode) === String(ecode); });
+    if (!match) {
+      failed.push(file.name + " (Ecode not found)");
+      done++;
+      status.innerHTML = "⏳ Uploading " + done + " of " + total + "...";
+      if (done === total) finishBulkIMEI(total, failed, status);
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(evt){
+      postToSheet({ action:"imei_upload", data:{ Ecode:ecode, "IMEI Screenshot Base64":evt.target.result.split(",")[1], "IMEI Screenshot Name":file.name, "IMEI Screenshot Type":file.type }}, function(){
+        done++;
+        status.innerHTML = "⏳ Uploading " + done + " of " + total + "...";
+        if (done === total) { finishBulkIMEI(total,failed,status); setTimeout(loadFromSheet,2000); }
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function finishBulkIMEI(total, failed, status) {
+  var success = total - failed.length;
+  if (!failed.length) {
+    status.innerHTML = '<span style="color:var(--green);">✅ All ' + total + ' uploaded!</span>';
+    toast("✅ " + total + " IMEI screenshots uploaded!", "success");
+  } else {
+    status.innerHTML = '<span style="color:var(--green);">✅ ' + success + ' uploaded.</span> <span style="color:var(--red);">❌ ' + failed.join(", ") + '</span>';
+  }
+}
+
 function downloadMIS() {
   if (!employees.length) { toast("No data to export.", "error"); return; }
-  var headers = ["Ecode","Name","Mobile","Department","Designation","Location","Region","DOJ","Onboarded Date","BGV Done","BGV Report Generated","ID Card Sent","Mail ID Created","Mail Created Date","Mail ID","Omnifin Required","Omnifin Created Date","Asset Required","IMEI Number"];
+  var headers = ["Ecode","Name","Mobile","Department","Designation","Location","Region","DOJ","Onboarded Date","BGV Done","BGV Report Generated","ID Card Sent","Mail ID Created","Mail Created Date","Mail ID","Omnifin Required","Omnifin Created Date","Asset Required","IMEI Number","Timestamp"];
   var csv = "\uFEFF" + headers.join(",") + "\r\n";
   employees.forEach(function(e){
-    csv += headers.map(function(h){ return '"'+(e[h]||"").replace(/"/g,'""')+'"'; }).join(",") + "\r\n";
+    csv += headers.map(function(h){ return '"'+(e[h]||"").toString().replace(/"/g,'""')+'"'; }).join(",") + "\r\n";
   });
   var blob = new Blob([csv],{type:"text/csv;charset=utf-8;"});
   var url  = URL.createObjectURL(blob);
@@ -801,37 +777,8 @@ function downloadMIS() {
   toast("📥 MIS downloaded!", "success");
 }
 
-// ── LOAD DATA FROM SHEET ON STARTUP ──
-function loadFromSheet() {
-  var callbackName = "sheetCB_" + Date.now();
-  var script = document.createElement("script");
-  var done = false;
-
-  window[callbackName] = function(data) {
-    done = true;
-    if (Array.isArray(data) && data.length > 0) {
-      employees = data;
-      updateDashboard();
-      renderTable();
-      toast("✅ " + data.length + " records loaded", "success");
-    } else {
-      toast("📋 Sheet is empty — add your first joiner!", "info");
-    }
-    delete window[callbackName];
-    if (script.parentNode) document.body.removeChild(script);
-  };
-
-  script.onerror = function() {
-    if (!done) toast("⚠️ Could not reach sheet. Check Apps Script deployment.", "error");
-    delete window[callbackName];
-  };
-
-  script.src = APPS_SCRIPT_URL + "?callback=" + callbackName + "&t=" + Date.now();
-  document.body.appendChild(script);
-}
-
 // ── INIT ──
-applyRole(); // apply department restrictions on load
+applyRole();
 updateDashboard();
 renderTable();
 loadFromSheet();
