@@ -343,7 +343,7 @@ var employees  = [];
 var role       = "department";
 var pendingRole= "";
 var PASSWORDS  = { hr:"1234", it:"1234", admin:"1234" };
-var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxkLaB1CIJr_ecknR6DeFyoQfQYXKx3mrIF4yO4VDzOfBYBmkFnNNXi9kRVhVHkJsQ/exec";
+var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxf8p6RK3ivt17G8V5qWRa8KvLBLOcyafCeG0xuelW72cB8-PlEJxwr7Q5mQ4q8d_AfyA/exec";
 
 // ── TOAST ──
 function toast(msg, type) {
@@ -803,47 +803,35 @@ function downloadMIS() {
 
 // ── LOAD DATA FROM SHEET ON STARTUP ──
 function loadFromSheet() {
-  // Try fetch first (works from Vercel/hosted environments)
-  fetch(APPS_SCRIPT_URL + "?t=" + Date.now())
-    .then(function(res) { return res.json(); })
-    .then(function(data) {
-      if (Array.isArray(data) && data.length > 0) {
-        employees = data;
-        updateDashboard();
-        renderTable();
-        toast("✅ Data loaded — " + data.length + " records", "success");
-      } else {
-        toast("📋 No records yet in sheet.", "info");
-      }
-    })
-    .catch(function() {
-      // Fallback to JSONP if fetch fails
-      loadFromSheetJSONP();
-    });
-}
-
-function loadFromSheetJSONP() {
   var callbackName = "sheetCB_" + Date.now();
   var script = document.createElement("script");
+  var done = false;
+
   window[callbackName] = function(data) {
+    done = true;
     if (Array.isArray(data) && data.length > 0) {
       employees = data;
       updateDashboard();
       renderTable();
-      toast("✅ Data loaded — " + data.length + " records", "success");
+      toast("✅ " + data.length + " records loaded", "success");
+    } else {
+      toast("📋 Sheet is empty — add your first joiner!", "info");
     }
     delete window[callbackName];
     if (script.parentNode) document.body.removeChild(script);
   };
+
   script.onerror = function() {
-    toast("⚠️ Could not load sheet data.", "error");
+    if (!done) toast("⚠️ Could not reach sheet. Check Apps Script deployment.", "error");
     delete window[callbackName];
   };
+
   script.src = APPS_SCRIPT_URL + "?callback=" + callbackName + "&t=" + Date.now();
   document.body.appendChild(script);
 }
 
 // ── INIT ──
+applyRole(); // apply department restrictions on load
 updateDashboard();
 renderTable();
 loadFromSheet();
