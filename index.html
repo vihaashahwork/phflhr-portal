@@ -255,7 +255,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
             <tr>
               <th>Ecode</th><th>Name</th><th>Dept</th><th>Region</th><th>DOJ</th>
               <th>BGV</th><th>Email</th><th>Omnifin</th><th>ID Card</th>
-              <th>Progress</th><th id="actionTh">Actions</th>
+              <th>Progress</th>              <th>IMEI</th><th id="actionTh">Actions</th>
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
@@ -320,7 +320,14 @@ tr:hover td{background:rgba(255,255,255,.02);}
           <button class="btn btn-success" onclick="downloadMIS()">⬇ Download MIS Report</button>
         </div>
         <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:4px;">
-          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Expected CSV Headers</div>
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">📸 Bulk IMEI Screenshot Upload</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">
+            Select multiple JPG/PNG files. Files must be named exactly as the <strong style="color:var(--accent);">Ecode</strong> (e.g. <code style="background:var(--surface3);padding:2px 5px;border-radius:4px;">2222.jpg</code>, <code style="background:var(--surface3);padding:2px 5px;border-radius:4px;">EMP001.png</code>). Each image will be uploaded to Drive and linked to the matching employee.
+          </div>
+          <input type="file" id="imeiFiles" accept="image/*" multiple style="background:var(--surface3);color:var(--text);border:1px solid var(--border);padding:8px 10px;border-radius:7px;font-size:13px;width:100%;">
+          <button class="btn btn-primary" style="margin-top:10px;" onclick="uploadBulkIMEI()">📸 Upload IMEI Screenshots</button>
+          <div id="imeiUploadStatus" style="margin-top:10px;font-size:12px;color:var(--text3);"></div>
+        </div>
           <div style="font-size:11px;color:var(--text3);line-height:1.8;background:var(--surface2);padding:10px;border-radius:6px;font-family:monospace;">
             Ecode, Name, Mobile, Department, Designation, Location, Region, DOJ, Onboarded Date, BGV Done, BGV Report Generated, ID Card Sent, Mail ID Created, Mail Created Date, Mail ID, Omnifin Required, Omnifin Created Date, Asset Required, IMEI Number
           </div>
@@ -336,7 +343,7 @@ var employees  = [];
 var role       = "department";
 var pendingRole= "";
 var PASSWORDS  = { hr:"1234", it:"1234", admin:"1234" };
-var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzWpyyhLYENUEr4Dm6x3eiz5bn97eru6AY8V7wCLGFgkoVXIoRsCrm4RNhsCaY5b71VZQ/exec";
+var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxkLaB1CIJr_ecknR6DeFyoQfQYXKx3mrIF4yO4VDzOfBYBmkFnNNXi9kRVhVHkJsQ/exec";
 
 // ── TOAST ──
 function toast(msg, type) {
@@ -433,7 +440,19 @@ function calcProgress(e) {
   return Math.round(done / 4 * 100);
 }
 
-function mkBadge(v, naLabel) {
+function formatDate(val) {
+  if (!val) return "—";
+  var d = new Date(val);
+  if (isNaN(d.getTime())) return val;
+  return d.getDate().toString().padStart(2,"0") + "-" + (d.getMonth()+1).toString().padStart(2,"0") + "-" + d.getFullYear();
+}
+
+function safeVal(e, keys) {
+  for (var i = 0; i < keys.length; i++) {
+    if (e[keys[i]] !== undefined && e[keys[i]] !== "") return e[keys[i]];
+  }
+  return "";
+}
   if (v === "Yes") return '<span class="badge b-done">Done</span>';
   if (v === "No")  return '<span class="badge b-pending">Pending</span>';
   return '<span class="badge b-na">' + (naLabel || "N/A") + '</span>';
@@ -483,31 +502,61 @@ function saveJoiner() {
 }
 
 function editRow(ecode) {
-  var e = employees.find(function(x){ return x.Ecode === ecode; });
-  if (!e) return;
-  var map = {
-    ecode:"Ecode", name:"Name", mobile:"Mobile", department:"Department",
-    designation:"Designation", location:"Location", region:"Region",
-    doj:"DOJ", onboardDate:"Onboarded Date", bgvDone:"BGV Done",
-    bgvReport:"BGV Report Generated", idSent:"ID Card Sent",
-    emailCreated:"Mail ID Created", emailDate:"Mail Created Date",
-    emailId:"Mail ID", omnifinReq:"Omnifin Required",
-    omnifinDate:"Omnifin Created Date", assetReq:"Asset Required",
-    imeiNumber:"IMEI Number"
-  };
-  Object.keys(map).forEach(function(id){
+  var e = employees.find(function(x){ return String(x.Ecode) === String(ecode); });
+  if (!e) { toast("Record not found.", "error"); return; }
+
+  function setVal(id, keys) {
     var el = document.getElementById(id);
-    if (el) el.value = e[map[id]] || "";
-  });
+    if (!el) return;
+    for (var i = 0; i < keys.length; i++) {
+      if (e[keys[i]] !== undefined && e[keys[i]] !== "") {
+        var val = e[keys[i]];
+        // Format dates from sheet timestamp
+        if (el.type === "date" && val) {
+          var d = new Date(val);
+          if (!isNaN(d.getTime())) {
+            val = d.toISOString().slice(0,10);
+          }
+        }
+        el.value = val;
+        return;
+      }
+    }
+    el.value = "";
+  }
+
+  setVal("ecode",        ["Ecode"]);
+  setVal("name",         ["Name"]);
+  setVal("mobile",       ["Mobile"]);
+  setVal("department",   ["Department"]);
+  setVal("designation",  ["Designation"]);
+  setVal("location",     ["Location"]);
+  setVal("region",       ["Region"]);
+  setVal("doj",          ["DOJ"]);
+  setVal("onboardDate",  ["Onboarded Date","Onboarded_Date"]);
+  setVal("bgvDone",      ["BGV Done","BGV_Done"]);
+  setVal("bgvReport",    ["BGV Report Generated","BGV_Report_Generated"]);
+  setVal("idSent",       ["ID Card Sent","ID_Card_Sent"]);
+  setVal("emailCreated", ["Mail ID Created","Mail_ID_Created"]);
+  setVal("emailDate",    ["Mail Created Date","Mail_Created_Date"]);
+  setVal("emailId",      ["Mail ID","Mail_ID"]);
+  setVal("omnifinReq",   ["Omnifin Required","Omnifin_Required"]);
+  setVal("omnifinDate",  ["Omnifin Created Date","Omnifin_Created_Date"]);
+  setVal("assetReq",     ["Asset Required","Asset_Required"]);
+  setVal("imeiNumber",   ["IMEI Number","IMEI_Number"]);
+
   document.getElementById("formTitle").innerText = "✏️ Edit — " + e.Name;
   showTab("add");
 }
 
 function deleteRow(ecode) {
   if (!confirm("Delete record for Ecode: " + ecode + "? This cannot be undone.")) return;
-  employees = employees.filter(function(e){ return e.Ecode !== ecode; });
+  employees = employees.filter(function(e){ return String(e.Ecode) !== String(ecode); });
+  // Also delete from sheet
+  postToSheet({ action: "delete", data: { Ecode: ecode } }, function(){
+    toast("🗑 Record deleted.", "info");
+  });
   updateDashboard(); renderTable();
-  toast("Record deleted.", "info");
 }
 
 function clearForm() {
@@ -549,7 +598,10 @@ function renderTable() {
   filtered.forEach(function(e){
     var p      = calcProgress(e);
     var pColor = p === 100 ? "var(--green)" : p >= 50 ? "var(--yellow)" : "var(--red)";
-    var done   = isComplete(e);
+          var imeiUrl  = safeVal(e, ["IMEI Screenshot","IMEI_Screenshot","IMEIScreenshot"]);
+      var imeiLink = imeiUrl
+        ? '<a href="' + imeiUrl + '" target="_blank" style="color:var(--blue);font-size:11px;text-decoration:none;">🖼 View</a>'
+        : '<span style="color:var(--text3);font-size:11px;">—</span>';
     var tr     = document.createElement("tr");
     tr.innerHTML =
       '<td class="ecode-cell">' + e.Ecode + '</td>' +
@@ -562,6 +614,7 @@ function renderTable() {
       '<td>' + mkBadge(e["Omnifin Required"], "N/Req") + '</td>' +
       '<td>' + mkBadge(e["ID Card Sent"]) + '</td>' +
       '<td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill" style="width:' + p + '%;background:' + pColor + '"></div></div><div class="prog-label">' + p + '%</div></div></td>' +
+      '<td>' + imeiLink + '</td>' +
       '<td style="' + (isDept ? 'display:none' : '') + '">' +
         '<button class="btn btn-success" style="padding:4px 9px;font-size:11px;" onclick="editRow(\'' + e.Ecode + '\')">Edit</button>' +
         (role === "admin" ? ' <button class="btn btn-danger" style="padding:4px 9px;font-size:11px;" onclick="deleteRow(\'' + e.Ecode + '\')">Del</button>' : '') +
@@ -652,7 +705,63 @@ function postToSheet(payload, callback) {
 }
 
 // ── CSV ──
-function uploadCSV() {
+function uploadBulkIMEI() {
+  var files = document.getElementById("imeiFiles").files;
+  if (!files.length) { toast("Select at least one image file.", "error"); return; }
+
+  var status = document.getElementById("imeiUploadStatus");
+  var total  = files.length;
+  var done   = 0;
+  var failed = [];
+  status.innerHTML = "⏳ Uploading 0 of " + total + "...";
+
+  Array.from(files).forEach(function(file) {
+    // Extract Ecode from filename (remove extension)
+    var ecode = file.name.replace(/\.[^/.]+$/, "").trim();
+    var match = employees.find(function(e){ return String(e.Ecode) === String(ecode); });
+
+    if (!match) {
+      failed.push(file.name + " (Ecode " + ecode + " not found)");
+      done++;
+      status.innerHTML = "⏳ Uploading " + done + " of " + total + "...";
+      if (done === total) finishBulkIMEI(total, failed, status);
+      return;
+    }
+
+    var reader = new FileReader();
+    reader.onload = function(evt) {
+      var base64 = evt.target.result.split(",")[1];
+      postToSheet({
+        action: "imei_upload",
+        data: {
+          Ecode: ecode,
+          "IMEI Screenshot Base64": base64,
+          "IMEI Screenshot Name": file.name,
+          "IMEI Screenshot Type": file.type
+        }
+      }, function(){
+        done++;
+        status.innerHTML = "⏳ Uploading " + done + " of " + total + "...";
+        if (done === total) {
+          finishBulkIMEI(total, failed, status);
+          setTimeout(loadFromSheet, 2000);
+        }
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function finishBulkIMEI(total, failed, status) {
+  var success = total - failed.length;
+  if (failed.length === 0) {
+    status.innerHTML = '<span style="color:var(--green);">✅ All ' + total + ' screenshots uploaded successfully!</span>';
+    toast("✅ " + total + " IMEI screenshots uploaded!", "success");
+  } else {
+    status.innerHTML = '<span style="color:var(--green);">✅ ' + success + ' uploaded.</span> <span style="color:var(--red);">❌ Failed: ' + failed.join(", ") + '</span>';
+    toast(success + " uploaded, " + failed.length + " failed.", "error");
+  }
+}
   var file = document.getElementById("csvFile").files[0];
   if (!file) { toast("Select a CSV file first.", "error"); return; }
   var reader = new FileReader();
