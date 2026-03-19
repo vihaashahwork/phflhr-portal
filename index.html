@@ -803,9 +803,28 @@ function downloadMIS() {
 
 // ── LOAD DATA FROM SHEET ON STARTUP ──
 function loadFromSheet() {
-  var script = document.createElement("script");
-  var callbackName = "sheetCallback_" + Date.now();
+  // Try fetch first (works from Vercel/hosted environments)
+  fetch(APPS_SCRIPT_URL + "?t=" + Date.now())
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (Array.isArray(data) && data.length > 0) {
+        employees = data;
+        updateDashboard();
+        renderTable();
+        toast("✅ Data loaded — " + data.length + " records", "success");
+      } else {
+        toast("📋 No records yet in sheet.", "info");
+      }
+    })
+    .catch(function() {
+      // Fallback to JSONP if fetch fails
+      loadFromSheetJSONP();
+    });
+}
 
+function loadFromSheetJSONP() {
+  var callbackName = "sheetCB_" + Date.now();
+  var script = document.createElement("script");
   window[callbackName] = function(data) {
     if (Array.isArray(data) && data.length > 0) {
       employees = data;
@@ -814,14 +833,13 @@ function loadFromSheet() {
       toast("✅ Data loaded — " + data.length + " records", "success");
     }
     delete window[callbackName];
-    document.body.removeChild(script);
+    if (script.parentNode) document.body.removeChild(script);
   };
-
-  script.src = APPS_SCRIPT_URL + "?callback=" + callbackName;
   script.onerror = function() {
-    toast("⚠️ Could not sync from sheet.", "error");
+    toast("⚠️ Could not load sheet data.", "error");
     delete window[callbackName];
   };
+  script.src = APPS_SCRIPT_URL + "?callback=" + callbackName + "&t=" + Date.now();
   document.body.appendChild(script);
 }
 
