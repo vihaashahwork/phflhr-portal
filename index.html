@@ -5,7 +5,37 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
+*{box-sizing:border-box;margin:0;padding:0;  updateGallery();
+}
+
+function updateGallery() {
+  var gallery = document.getElementById("imeiGallery");
+  var withIMEI = employees.filter(function(e){
+    return e["IMEI Screenshot"] && String(e["IMEI Screenshot"]).indexOf("http") === 0;
+  });
+  if (!withIMEI.length) {
+    gallery.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:20px;text-align:center;grid-column:1/-1;">No IMEI screenshots uploaded yet.</div>';
+    return;
+  }
+  gallery.innerHTML = withIMEI.map(function(e){
+    var url = e["IMEI Screenshot"];
+    // Convert Drive view link to direct thumbnail
+    var thumbUrl = url;
+    var match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (match) {
+      thumbUrl = "https://drive.google.com/thumbnail?id=" + match[1] + "&sz=w200";
+    }
+    return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;" onclick="window.open(\'' + url + '\',\'_blank\')">' +
+      '<img src="' + thumbUrl + '" style="width:100%;height:120px;object-fit:cover;display:block;" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'">' +
+      '<div style="display:none;height:120px;align-items:center;justify-content:center;font-size:28px;">🖼</div>' +
+      '<div style="padding:8px 10px;">' +
+        '<div style="font-size:11px;font-weight:700;color:var(--accent);">' + e.Ecode + '</div>' +
+        '<div style="font-size:12px;color:var(--text2);margin-top:2px;">' + e.Name + '</div>' +
+        '<div style="font-size:10px;color:var(--text3);margin-top:2px;">' + (e.Department || "—") + '</div>' +
+      '</div>' +
+    '</div>';
+  }).join("");
+}
 :root{
   --bg:#0d1117;--surface:#161b22;--surface2:#1c2330;--surface3:#21293a;
   --border:#2a3444;--accent:#f5a623;--text:#e6edf3;
@@ -211,9 +241,15 @@ tr:hover td{background:rgba(255,255,255,.02);}
           <div class="region-bars" id="regionBars"></div>
         </div>
       </div>
-    </div>
-
-    <!-- TRACKER -->
+      <!-- IMEI Gallery -->
+      <div style="margin-top:14px;">
+        <div class="section-header" style="margin-bottom:12px;"><div class="section-bar"></div><div class="section-title">IMEI Screenshot Gallery</div></div>
+        <div class="card">
+          <div id="imeiGallery" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;">
+            <div style="color:var(--text3);font-size:13px;padding:20px;text-align:center;grid-column:1/-1;">No IMEI screenshots uploaded yet.</div>
+          </div>
+        </div>
+      </div>
     <div class="tab-content" id="tab-tracker">
       <div class="section-header">
         <div class="section-bar"></div><div class="section-title">Joiner Tracker</div>
