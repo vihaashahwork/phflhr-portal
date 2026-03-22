@@ -491,7 +491,6 @@ function sendAndFinish(e, isNew) {
     document.getElementById("saveBtn").disabled = false;
     toast(isNew ? "✅ Joiner saved & IT notified!" : "✅ Joiner updated!", "success");
     clearForm(); updateDashboard(); renderTable(); showTab("tracker");
-    setTimeout(loadFromSheet, 3000);
   });
 }
 
@@ -675,30 +674,69 @@ function postToSheet(payload, callback) {
 }
 
 function loadFromSheet() {
+  fetch(APPS_SCRIPT_URL + "?t=" + Date.now())
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (Array.isArray(data) && data.length > 0) {
+        employees = data;
+        updateDashboard();
+        renderTable();
+        toast("✅ " + data.length + " records loaded", "success");
+      } else {
+        toast("📋 No records yet — add your first joiner!", "info");
+      }
+    })
+    .catch(function() { loadFromSheetJSONP(); });
+}
+
+function loadFromSheetJSONP() {
   var callbackName = "sheetCB_" + Date.now();
   var script = document.createElement("script");
-  var done = false;
   window[callbackName] = function(data) {
-    done = true;
     if (Array.isArray(data) && data.length > 0) {
       employees = data;
       updateDashboard();
       renderTable();
-      toast("✅ " + data.length + " records loaded", "success");
-    } else {
-      toast("📋 No records yet — add your first joiner!", "info");
     }
     delete window[callbackName];
     if (script.parentNode) document.body.removeChild(script);
   };
   script.onerror = function() {
-    if (!done) toast("⚠️ Could not reach sheet.", "error");
     delete window[callbackName];
+    if (script.parentNode) document.body.removeChild(script);
   };
   script.src = APPS_SCRIPT_URL + "?callback=" + callbackName + "&t=" + Date.now();
   document.body.appendChild(script);
 }
 
+// Silent background sync — no toast, no disruption
+function silentRefresh() {
+  fetch(APPS_SCRIPT_URL + "?t=" + Date.now())
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (Array.isArray(data) && data.length > 0) {
+        employees = data;
+        updateDashboard();
+        renderTable();
+      }
+    })
+    .catch(function(){
+      // fallback JSONP
+      var cb = "scb_" + Date.now();
+      var s  = document.createElement("script");
+      window[cb] = function(data) {
+        if (Array.isArray(data) && data.length > 0) {
+          employees = data;
+          updateDashboard();
+          renderTable();
+        }
+        delete window[cb];
+        if (s.parentNode) document.body.removeChild(s);
+      };
+      s.src = APPS_SCRIPT_URL + "?callback=" + cb + "&t=" + Date.now();
+      document.body.appendChild(s);
+    });
+}
 function uploadCSV() {
   var file = document.getElementById("csvFile").files[0];
   if (!file) { toast("Select a CSV file first.", "error"); return; }
@@ -743,7 +781,7 @@ function uploadBulkIMEI() {
       postToSheet({ action:"imei_upload", data:{ Ecode:ecode, "IMEI Screenshot Base64":evt.target.result.split(",")[1], "IMEI Screenshot Name":file.name, "IMEI Screenshot Type":file.type }}, function(){
         done++;
         status.innerHTML = "⏳ Uploading " + done + " of " + total + "...";
-        if (done === total) { finishBulkIMEI(total,failed,status); setTimeout(loadFromSheet,2000); }
+        if (done === total) { finishBulkIMEI(total,failed,status); }
       });
     };
     reader.readAsDataURL(file);
@@ -782,6 +820,7 @@ applyRole();
 updateDashboard();
 renderTable();
 loadFromSheet();
+setInterval(silentRefresh, 5000); // sync every 5 seconds silently
 </script>
 </body>
 </html>
