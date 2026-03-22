@@ -5,34 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-*{box-sizing:border-box;margin:0;padding:0;  updateGallery();
-}
-
-function updateGallery() {
-  var gallery = document.getElementById("imeiGallery");
-  if (!gallery) return;
-  var withIMEI = employees.filter(function(e){
-    return e["IMEI Screenshot"] && String(e["IMEI Screenshot"]).indexOf("http") === 0;
-  });
-  if (!withIMEI.length) {
-    gallery.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:20px;text-align:center;grid-column:1/-1;">No IMEI screenshots uploaded yet.</div>';
-    return;
-  }
-  gallery.innerHTML = withIMEI.map(function(e){
-    var url = e["IMEI Screenshot"];
-    var thumbUrl = url;
-    var match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-    if (match) thumbUrl = "https://drive.google.com/thumbnail?id=" + match[1] + "&sz=w200";
-    return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;" onclick="window.open(\'' + url + '\',\'_blank\')">' +
-      '<img src="' + thumbUrl + '" style="width:100%;height:120px;object-fit:cover;display:block;" onerror="this.style.display=\'none\'">' +
-      '<div style="padding:8px 10px;">' +
-        '<div style="font-size:11px;font-weight:700;color:var(--accent);">' + e.Ecode + '</div>' +
-        '<div style="font-size:12px;color:var(--text2);margin-top:2px;">' + e.Name + '</div>' +
-        '<div style="font-size:10px;color:var(--text3);margin-top:2px;">' + (e.Department || "—") + '</div>' +
-      '</div>' +
-    '</div>';
-  }).join("");
-
+*{box-sizing:border-box;margin:0;padding:0;}
 :root{
   --bg:#0d1117;--surface:#161b22;--surface2:#1c2330;--surface3:#21293a;
   --border:#2a3444;--accent:#f5a623;--text:#e6edf3;
@@ -56,7 +29,7 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .rb-it{background:rgba(59,130,246,.15);color:var(--blue);border:1px solid rgba(59,130,246,.3);}
 .rb-admin{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3);}
 .access-tag{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:.4px;}
-.toast{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px;}
+.toast-wrap{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px;}
 .toast-item{padding:12px 18px;border-radius:8px;font-size:13px;font-weight:500;box-shadow:0 4px 20px rgba(0,0,0,.4);animation:slideIn .3s ease;max-width:320px;}
 @keyframes slideIn{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}
 .toast-success{background:#14532d;border:1px solid var(--green);color:#bbf7d0;}
@@ -74,7 +47,6 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .section-bar{width:3px;height:17px;background:var(--accent);border-radius:2px;flex-shrink:0;}
 .section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:18px;overflow-x:auto;}
-.card+.card,.card+div{margin-top:14px;}
 .metrics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;margin-bottom:14px;}
 .metric-card{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:14px 16px;position:relative;overflow:hidden;}
 .metric-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
@@ -90,7 +62,6 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .mc-orange .metric-value{color:var(--accent);}.mc-red .metric-value{color:var(--red);}
 .mc-green .metric-value{color:var(--green);}.mc-blue .metric-value{color:var(--blue);}
 .mc-yellow .metric-value{color:var(--yellow);}.mc-purple .metric-value{color:var(--purple);}
-.progress-ring{display:flex;align-items:center;gap:12px;}
 .ring-wrap{position:relative;width:50px;height:50px;flex-shrink:0;}
 .ring-wrap svg{transform:rotate(-90deg);}
 .ring-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;}
@@ -100,7 +71,7 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .region-bar-item{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;}
 .rb-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
 .rb-name{font-size:11px;color:var(--text2);font-weight:600;}.rb-count{font-size:13px;font-weight:700;}
-.form-section-title{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;font-weight:700;margin:16px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--border);}
+.form-sec-title{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;font-weight:700;margin:16px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--border);}
 .form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;}
 .field{display:flex;flex-direction:column;gap:3px;}
 .field label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;font-weight:600;}
@@ -108,33 +79,33 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .field input:focus,.field select:focus{border-color:var(--accent);}
 .field input::placeholder{color:var(--text3);}
 .field select option{background:var(--surface3);}
-.required-star{color:var(--red);margin-left:2px;}
+.req{color:var(--red);margin-left:2px;}
 .btn{display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:7px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:all .15s;}
-.btn-primary{background:var(--accent);color:#000;}.btn-primary:hover{background:#e8890a;}
-.btn-secondary{background:var(--surface3);color:var(--text);border:1px solid var(--border);}.btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
-.btn-success{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3);}.btn-success:hover{background:rgba(34,197,94,.25);}
-.btn-danger{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3);}.btn-danger:hover{background:rgba(239,68,68,.25);}
+.btn-p{background:var(--accent);color:#000;}.btn-p:hover{background:#e8890a;}
+.btn-s{background:var(--surface3);color:var(--text);border:1px solid var(--border);}.btn-s:hover{border-color:var(--accent);color:var(--accent);}
+.btn-g{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3);}.btn-g:hover{background:rgba(34,197,94,.25);}
+.btn-d{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3);}.btn-d:hover{background:rgba(239,68,68,.25);}
 .btn-row{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;align-items:center;}
-.saving-spinner{display:none;font-size:12px;color:var(--text3);}
-.table-toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;}
-.table-toolbar input,.table-toolbar select{background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:7px 10px;border-radius:7px;font-size:12px;outline:none;}
-.table-toolbar input{min-width:200px;}
+.spinner{display:none;font-size:12px;color:var(--text3);}
+.tbl-toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;}
+.tbl-toolbar input,.tbl-toolbar select{background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:7px 10px;border-radius:7px;font-size:12px;outline:none;}
+.tbl-toolbar input{min-width:200px;}
 .count-tag{font-size:12px;color:var(--text3);margin-left:auto;}
 table{width:100%;border-collapse:collapse;font-size:12px;min-width:900px;}
 thead tr{border-bottom:1px solid var(--border);}
 th{padding:9px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);font-weight:700;white-space:nowrap;}
 td{padding:10px;border-bottom:1px solid rgba(42,52,68,.4);color:var(--text2);vertical-align:middle;white-space:nowrap;}
 tr:hover td{background:rgba(255,255,255,.02);}
-.ecode-cell{font-family:monospace;font-size:12px;color:var(--accent);font-weight:700;}
-.name-cell{color:var(--text);font-weight:600;}
+.ec{font-family:monospace;font-size:12px;color:var(--accent);font-weight:700;}
+.nc{color:var(--text);font-weight:600;}
 .badge{padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;}
-.b-done{background:rgba(34,197,94,.15);color:var(--green);}
-.b-pending{background:rgba(239,68,68,.15);color:var(--red);}
-.b-na{background:rgba(245,158,11,.15);color:var(--yellow);}
-.prog-wrap{min-width:80px;}
-.prog-track{background:var(--border);height:4px;border-radius:4px;margin-bottom:2px;}
-.prog-fill{height:4px;border-radius:4px;transition:width .4s;}
-.prog-label{font-size:10px;color:var(--text3);}
+.bd{background:rgba(34,197,94,.15);color:var(--green);}
+.bp{background:rgba(239,68,68,.15);color:var(--red);}
+.bn{background:rgba(245,158,11,.15);color:var(--yellow);}
+.pw{min-width:80px;}
+.pt{background:var(--border);height:4px;border-radius:4px;margin-bottom:2px;}
+.pf{height:4px;border-radius:4px;transition:width .4s;}
+.pl{font-size:10px;color:var(--text3);}
 .empty-row td{text-align:center;padding:36px;color:var(--text3);font-size:13px;}
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
 .overlay.open{display:flex;}
@@ -143,24 +114,31 @@ tr:hover td{background:rgba(255,255,255,.02);}
 .modal p{font-size:13px;color:var(--text2);margin-bottom:14px;}
 .modal input{width:100%;background:var(--surface3);color:var(--text);border:1px solid var(--border);padding:10px;border-radius:7px;font-size:14px;outline:none;margin-bottom:6px;}
 .modal input:focus{border-color:var(--accent);}
-.pw-error{font-size:12px;color:var(--red);margin-bottom:12px;display:none;}
-.tab-content{display:none;}
-.tab-content.active{display:block;}
+.pw-err{font-size:12px;color:var(--red);margin-bottom:12px;display:none;}
+.tab-content{display:none;}.tab-content.active{display:block;}
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;}
+.gallery-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;transition:border-color .15s;}
+.gallery-card:hover{border-color:var(--accent);}
+.gallery-card img{width:100%;height:110px;object-fit:cover;display:block;}
+.gallery-card-body{padding:8px 10px;}
+.gallery-ecode{font-size:11px;font-weight:700;color:var(--accent);}
+.gallery-name{font-size:12px;color:var(--text2);margin-top:2px;}
+.gallery-dept{font-size:10px;color:var(--text3);margin-top:2px;}
 </style>
 </head>
 <body>
 
-<div class="toast" id="toastContainer"></div>
+<div class="toast-wrap" id="toastWrap"></div>
 
 <div class="overlay" id="pwOverlay">
   <div class="modal">
     <h3>🔒 Restricted Access</h3>
     <p>Enter password to switch to <strong id="targetLabel" style="color:var(--accent)"></strong> view.</p>
     <input type="password" id="pwInput" placeholder="Enter password..." onkeydown="if(event.key==='Enter')submitPw()">
-    <div class="pw-error" id="pwError">❌ Incorrect password. Try again.</div>
+    <div class="pw-err" id="pwErr">❌ Incorrect password. Try again.</div>
     <div style="display:flex;gap:8px;">
-      <button class="btn btn-primary" onclick="submitPw()">🔓 Unlock</button>
-      <button class="btn btn-secondary" onclick="cancelPw()">Cancel</button>
+      <button class="btn btn-p" onclick="submitPw()">🔓 Unlock</button>
+      <button class="btn btn-s" onclick="cancelPw()">Cancel</button>
     </div>
   </div>
 </div>
@@ -215,10 +193,10 @@ tr:hover td{background:rgba(255,255,255,.02);}
         <div class="metric-card mc-yellow"><div class="metric-label">Omnifin Pending</div><div class="metric-value" id="m-omnifin">0</div><div class="metric-sub">Setup incomplete</div></div>
         <div class="metric-card mc-purple"><div class="metric-label">ID Card Pending</div><div class="metric-value" id="m-idcard">0</div><div class="metric-sub">Not dispatched</div></div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
         <div class="card">
           <div class="section-header" style="margin-bottom:12px;"><div class="section-bar"></div><div class="section-title">Completion Overview</div></div>
-          <div class="progress-ring">
+          <div style="display:flex;align-items:center;gap:12px;">
             <div class="ring-wrap">
               <svg width="50" height="50" viewBox="0 0 50 50">
                 <circle cx="25" cy="25" r="20" fill="none" stroke="var(--border)" stroke-width="5"/>
@@ -238,22 +216,22 @@ tr:hover td{background:rgba(255,255,255,.02);}
           <div class="region-bars" id="regionBars"></div>
         </div>
       </div>
-      <!-- IMEI Gallery -->
-      <div style="margin-top:14px;">
-        <div class="section-header" style="margin-bottom:12px;"><div class="section-bar"></div><div class="section-title">IMEI Screenshot Gallery</div></div>
-        <div class="card">
-          <div id="imeiGallery" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;">
-            <div style="color:var(--text3);font-size:13px;padding:20px;text-align:center;grid-column:1/-1;">No IMEI screenshots uploaded yet.</div>
-          </div>
+      <div class="card">
+        <div class="section-header" style="margin-bottom:14px;"><div class="section-bar"></div><div class="section-title">IMEI Screenshot Gallery</div></div>
+        <div class="gallery-grid" id="imeiGallery">
+          <div style="color:var(--text3);font-size:13px;padding:20px;text-align:center;grid-column:1/-1;">No IMEI screenshots uploaded yet.</div>
         </div>
       </div>
+    </div>
+
+    <!-- TRACKER -->
     <div class="tab-content" id="tab-tracker">
       <div class="section-header">
         <div class="section-bar"></div><div class="section-title">Joiner Tracker</div>
-        <button class="btn btn-success" style="margin-left:auto;" onclick="downloadMIS()">⬇ Download MIS</button>
+        <button class="btn btn-g" style="margin-left:auto;" onclick="downloadMIS()">⬇ Download MIS</button>
       </div>
       <div class="card">
-        <div class="table-toolbar">
+        <div class="tbl-toolbar">
           <input id="searchInput" placeholder="🔍 Search name or Ecode..." oninput="renderTable()">
           <select id="filterRegion" onchange="renderTable()"><option value="">All Regions</option><option>North 1</option><option>North 2</option><option>South</option><option>West</option></select>
           <select id="filterBGV" onchange="renderTable()"><option value="">BGV: All</option><option value="Yes">Done</option><option value="No">Pending</option></select>
@@ -277,10 +255,10 @@ tr:hover td{background:rgba(255,255,255,.02);}
     <div class="tab-content" id="tab-add">
       <div class="section-header"><div class="section-bar"></div><div class="section-title" id="formTitle">Add New Joiner</div></div>
       <div class="card">
-        <div class="form-section-title">Personal Information</div>
+        <div class="form-sec-title">Personal Information</div>
         <div class="form-grid">
-          <div class="field"><label>Ecode<span class="required-star">*</span></label><input id="ecode" placeholder="EMP001"></div>
-          <div class="field"><label>Full Name<span class="required-star">*</span></label><input id="name" placeholder="John Doe"></div>
+          <div class="field"><label>Ecode<span class="req">*</span></label><input id="ecode" placeholder="EMP001"></div>
+          <div class="field"><label>Full Name<span class="req">*</span></label><input id="name" placeholder="John Doe"></div>
           <div class="field"><label>Mobile</label><input id="mobile" placeholder="+91 9999999999"></div>
           <div class="field"><label>Department</label><input id="department" placeholder="Engineering"></div>
           <div class="field"><label>Designation</label><input id="designation" placeholder="Senior Analyst"></div>
@@ -289,13 +267,13 @@ tr:hover td{background:rgba(255,255,255,.02);}
           <div class="field"><label>Date of Joining</label><input type="date" id="doj"></div>
           <div class="field"><label>Onboarded Date</label><input type="date" id="onboardDate"></div>
         </div>
-        <div class="form-section-title">HR Status</div>
+        <div class="form-sec-title">HR Status</div>
         <div class="form-grid">
           <div class="field"><label>BGV Done</label><select id="bgvDone"><option>No</option><option>Yes</option></select></div>
           <div class="field"><label>BGV Report Generated</label><select id="bgvReport"><option>No</option><option>Yes</option></select></div>
           <div class="field"><label>ID Card Sent</label><select id="idSent"><option>No</option><option>Yes</option></select></div>
         </div>
-        <div class="form-section-title">IT Status</div>
+        <div class="form-sec-title">IT Status</div>
         <div class="form-grid">
           <div class="field"><label>Mail ID Created</label><select id="emailCreated"><option>No</option><option>Yes</option></select></div>
           <div class="field"><label>Mail Created Date</label><input type="date" id="emailDate"></div>
@@ -307,9 +285,9 @@ tr:hover td{background:rgba(255,255,255,.02);}
           <div class="field"><label>IMEI Screenshot</label><input type="file" id="imeiFile" accept="image/*"></div>
         </div>
         <div class="btn-row">
-          <button class="btn btn-primary" id="saveBtn" onclick="saveJoiner()">💾 Save Joiner</button>
-          <button class="btn btn-secondary" onclick="clearForm()">✕ Clear</button>
-          <span class="saving-spinner" id="savingSpinner">⏳ Saving to sheet...</span>
+          <button class="btn btn-p" id="saveBtn" onclick="saveJoiner()">💾 Save Joiner</button>
+          <button class="btn btn-s" onclick="clearForm()">✕ Clear</button>
+          <span class="spinner" id="savingSpinner">⏳ Saving...</span>
         </div>
       </div>
     </div>
@@ -320,25 +298,24 @@ tr:hover td{background:rgba(255,255,255,.02);}
       <div class="card" style="max-width:500px;">
         <div style="margin-bottom:16px;">
           <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Upload CSV</div>
-          <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">CSV headers must match exactly. Existing Ecodes will be updated.</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Existing Ecodes will be updated.</div>
           <input type="file" id="csvFile" accept=".csv" style="background:var(--surface3);color:var(--text);border:1px solid var(--border);padding:8px 10px;border-radius:7px;font-size:13px;width:100%;">
-          <button class="btn btn-primary" style="margin-top:10px;" onclick="uploadCSV()">⬆ Upload CSV</button>
+          <button class="btn btn-p" style="margin-top:10px;" onclick="uploadCSV()">⬆ Upload CSV</button>
         </div>
         <div style="border-top:1px solid var(--border);padding-top:16px;">
           <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Export MIS</div>
-          <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Downloads full onboarding data as CSV.</div>
-          <button class="btn btn-success" onclick="downloadMIS()">⬇ Download MIS Report</button>
+          <button class="btn btn-g" onclick="downloadMIS()">⬇ Download MIS Report</button>
         </div>
-        <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:4px;">
-          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">📸 Bulk IMEI Screenshot Upload</div>
-          <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Files must be named as Ecode (e.g. <code style="background:var(--surface3);padding:2px 5px;border-radius:4px;">2222.jpg</code>).</div>
+        <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:16px;">
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">📸 Bulk IMEI Upload</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Name files as Ecode (e.g. <code style="background:var(--surface3);padding:2px 5px;border-radius:4px;">2222.jpg</code>)</div>
           <input type="file" id="imeiFiles" accept="image/*" multiple style="background:var(--surface3);color:var(--text);border:1px solid var(--border);padding:8px 10px;border-radius:7px;font-size:13px;width:100%;">
-          <button class="btn btn-primary" style="margin-top:10px;" onclick="uploadBulkIMEI()">📸 Upload IMEI Screenshots</button>
-          <div id="imeiUploadStatus" style="margin-top:10px;font-size:12px;color:var(--text3);"></div>
+          <button class="btn btn-p" style="margin-top:10px;" onclick="uploadBulkIMEI()">📸 Upload Screenshots</button>
+          <div id="imeiStatus" style="margin-top:10px;font-size:12px;color:var(--text3);"></div>
         </div>
-        <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:4px;">
-          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Expected CSV Headers</div>
-          <div style="font-size:11px;color:var(--text3);line-height:1.8;background:var(--surface2);padding:10px;border-radius:6px;font-family:monospace;">
+        <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:16px;">
+          <div style="font-size:13px;font-weight:600;margin-bottom:6px;">Expected CSV Headers</div>
+          <div style="font-size:11px;color:var(--text3);background:var(--surface2);padding:10px;border-radius:6px;font-family:monospace;line-height:1.8;">
             Ecode, Name, Mobile, Department, Designation, Location, Region, DOJ, Onboarded Date, BGV Done, BGV Report Generated, ID Card Sent, Mail ID Created, Mail Created Date, Mail ID, Omnifin Required, Omnifin Created Date, Asset Required, IMEI Number
           </div>
         </div>
@@ -355,30 +332,31 @@ var pendingRole = "";
 var PASSWORDS   = { hr:"1234", it:"1234", admin:"1234" };
 var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxf8p6RK3ivt17G8V5qWRa8KvLBLOcyafCeG0xuelW72cB8-PlEJxwr7Q5mQ4q8d_AfyA/exec";
 
+// ── TOAST ──
 function toast(msg, type) {
-  var c = document.getElementById("toastContainer");
+  var c = document.getElementById("toastWrap");
   var t = document.createElement("div");
   t.className = "toast-item toast-" + (type || "info");
   t.innerText = msg;
   c.appendChild(t);
-  setTimeout(function(){ t.style.opacity="0"; t.style.transition="opacity .4s"; setTimeout(function(){ if(t.parentNode)c.removeChild(t); },400); },3500);
+  setTimeout(function(){ t.style.opacity="0"; t.style.transition="opacity .4s"; setTimeout(function(){ if(t.parentNode) c.removeChild(t); }, 400); }, 3500);
 }
 
+// ── ROLE ──
 function handleRoleChange() {
   var r = document.getElementById("roleSelect").value;
   if (r === "department") { role = "department"; applyRole(); return; }
   pendingRole = r;
   document.getElementById("targetLabel").innerText = r.toUpperCase();
   document.getElementById("pwInput").value = "";
-  document.getElementById("pwError").style.display = "none";
+  document.getElementById("pwErr").style.display = "none";
   document.getElementById("pwInput").style.borderColor = "var(--border)";
   document.getElementById("pwOverlay").classList.add("open");
   setTimeout(function(){ document.getElementById("pwInput").focus(); }, 120);
 }
 
 function submitPw() {
-  var entered = document.getElementById("pwInput").value;
-  if (entered === PASSWORDS[pendingRole]) {
+  if (document.getElementById("pwInput").value === PASSWORDS[pendingRole]) {
     role = pendingRole;
     document.getElementById("pwOverlay").classList.remove("open");
     applyRole();
@@ -386,7 +364,7 @@ function submitPw() {
   } else {
     document.getElementById("pwInput").value = "";
     document.getElementById("pwInput").style.borderColor = "var(--red)";
-    document.getElementById("pwError").style.display = "block";
+    document.getElementById("pwErr").style.display = "block";
     setTimeout(function(){ document.getElementById("pwInput").style.borderColor = "var(--border)"; }, 1500);
   }
 }
@@ -398,33 +376,28 @@ function cancelPw() {
 
 function applyRole() {
   var isDept = role === "department";
-  var badgeMap = { department:"rb-dept", hr:"rb-hr", it:"rb-it", admin:"rb-admin" };
-  var labelMap = { department:"DEPT", hr:"HR", it:"IT", admin:"ADMIN" };
+  var bmap = { department:"rb-dept", hr:"rb-hr", it:"rb-it", admin:"rb-admin" };
+  var lmap = { department:"DEPT", hr:"HR", it:"IT", admin:"ADMIN" };
   var badge = document.getElementById("roleBadge");
-  badge.className = "role-badge " + badgeMap[role];
-  badge.innerText = labelMap[role];
+  badge.className = "role-badge " + bmap[role];
+  badge.innerText = lmap[role];
   var tag = document.getElementById("accessTag");
   if (isDept) {
-    tag.innerText = "READ-ONLY";
-    tag.style.color = "var(--accent)";
-    tag.style.borderColor = "rgba(245,166,35,.3)";
-    tag.style.background = "rgba(245,166,35,.1)";
+    tag.innerText="READ-ONLY"; tag.style.color="var(--accent)";
+    tag.style.borderColor="rgba(245,166,35,.3)"; tag.style.background="rgba(245,166,35,.1)";
   } else {
-    tag.innerText = "EDIT ACCESS";
-    tag.style.color = "var(--green)";
-    tag.style.borderColor = "rgba(34,197,94,.3)";
-    tag.style.background = "rgba(34,197,94,.1)";
+    tag.innerText="EDIT ACCESS"; tag.style.color="var(--green)";
+    tag.style.borderColor="rgba(34,197,94,.3)"; tag.style.background="rgba(34,197,94,.1)";
   }
   document.getElementById("nav-add").style.display    = isDept ? "none" : "";
   document.getElementById("nav-upload").style.display = isDept ? "none" : "";
   document.getElementById("actionTh").style.display   = isDept ? "none" : "";
-  if (isDept && (document.getElementById("tab-add").classList.contains("active") ||
-      document.getElementById("tab-upload").classList.contains("active"))) {
-    showTab("dashboard");
-  }
+  var curTab = document.querySelector(".tab-content.active");
+  if (isDept && curTab && (curTab.id === "tab-add" || curTab.id === "tab-upload")) showTab("dashboard");
   renderTable();
 }
 
+// ── TABS ──
 function showTab(name) {
   document.querySelectorAll(".tab-content").forEach(function(t){ t.classList.remove("active"); });
   document.querySelectorAll(".nav-item").forEach(function(n){ n.classList.remove("active"); });
@@ -435,45 +408,43 @@ function showTab(name) {
 
 function filterByRegion(r) {
   document.getElementById("filterRegion").value = r;
-  showTab("tracker");
-  renderTable();
+  showTab("tracker"); renderTable();
 }
 
+// ── HELPERS ──
 function isComplete(e) {
-  return e["Mail ID Created"] === "Yes" &&
-         e["ID Card Sent"] === "Yes" &&
-         (e["Omnifin Required"] === "No" || e["Omnifin Required"] === "Not Required" || e["Omnifin Required"] === "Yes");
+  return e["Mail ID Created"] === "Yes" && e["ID Card Sent"] === "Yes" &&
+    (e["Omnifin Required"] === "No" || e["Omnifin Required"] === "Not Required" || e["Omnifin Required"] === "Yes");
 }
 
 function calcProgress(e) {
-  var done = 0;
-  if (e["BGV Done"] === "Yes") done++;
-  if (e["Mail ID Created"] === "Yes") done++;
-  if (e["ID Card Sent"] === "Yes") done++;
-  if (e["Omnifin Required"] === "No" || e["Omnifin Required"] === "Not Required" || e["Omnifin Required"] === "Yes") done++;
-  return Math.round(done / 4 * 100);
+  var d = 0;
+  if (e["BGV Done"] === "Yes") d++;
+  if (e["Mail ID Created"] === "Yes") d++;
+  if (e["ID Card Sent"] === "Yes") d++;
+  if (e["Omnifin Required"] === "No" || e["Omnifin Required"] === "Not Required" || e["Omnifin Required"] === "Yes") d++;
+  return Math.round(d / 4 * 100);
 }
 
-function mkBadge(v, naLabel) {
-  if (v === "Yes") return '<span class="badge b-done">Done</span>';
-  if (v === "No")  return '<span class="badge b-pending">Pending</span>';
-  return '<span class="badge b-na">' + (naLabel || "N/A") + '</span>';
+function mkBadge(v, na) {
+  if (v === "Yes") return '<span class="badge bd">Done</span>';
+  if (v === "No")  return '<span class="badge bp">Pending</span>';
+  return '<span class="badge bn">' + (na || "N/A") + '</span>';
 }
 
-function safeVal(e, keys) {
-  for (var i = 0; i < keys.length; i++) {
-    if (e[keys[i]] !== undefined && e[keys[i]] !== "") return e[keys[i]];
-  }
+function sv(e, keys) {
+  for (var i = 0; i < keys.length; i++) if (e[keys[i]] !== undefined && e[keys[i]] !== "") return e[keys[i]];
   return "";
 }
 
-function formatDate(val) {
+function fmtDate(val) {
   if (!val) return "—";
   var d = new Date(val);
   if (isNaN(d.getTime())) return val;
   return d.getDate().toString().padStart(2,"0") + "-" + (d.getMonth()+1).toString().padStart(2,"0") + "-" + d.getFullYear();
 }
 
+// ── SAVE JOINER ──
 function saveJoiner() {
   var ecode = document.getElementById("ecode").value.trim();
   var name  = document.getElementById("name").value.trim();
@@ -498,7 +469,7 @@ function saveJoiner() {
     "Asset Required": document.getElementById("assetReq").value,
     "IMEI Number": document.getElementById("imeiNumber").value
   };
-  var idx   = employees.findIndex(function(x){ return String(x.Ecode) === String(ecode); });
+  var idx = employees.findIndex(function(x){ return String(x.Ecode) === String(ecode); });
   var isNew = idx < 0;
   if (isNew) employees.push(e); else employees[idx] = e;
   document.getElementById("savingSpinner").style.display = "inline";
@@ -510,15 +481,15 @@ function saveJoiner() {
       e["IMEI Screenshot Base64"] = evt.target.result.split(",")[1];
       e["IMEI Screenshot Name"]   = imeiFile.name;
       e["IMEI Screenshot Type"]   = imeiFile.type;
-      sendAndFinish(e, isNew);
+      doSave(e, isNew);
     };
     reader.readAsDataURL(imeiFile);
   } else {
-    sendAndFinish(e, isNew);
+    doSave(e, isNew);
   }
 }
 
-function sendAndFinish(e, isNew) {
+function doSave(e, isNew) {
   postToSheet({ action: isNew ? "add" : "update", data: e }, function(){
     document.getElementById("savingSpinner").style.display = "none";
     document.getElementById("saveBtn").disabled = false;
@@ -527,6 +498,7 @@ function sendAndFinish(e, isNew) {
   });
 }
 
+// ── EDIT ──
 function editRow(ecode) {
   var e = employees.find(function(x){ return String(x.Ecode) === String(ecode); });
   if (!e) { toast("Record not found.", "error"); return; }
@@ -554,25 +526,23 @@ function editRow(ecode) {
   showTab("add");
 }
 
+// ── DELETE ──
 function deleteRow(ecode) {
   if (!confirm("Delete record for Ecode: " + ecode + "?")) return;
   employees = employees.filter(function(e){ return String(e.Ecode) !== String(ecode); });
-  postToSheet({ action: "delete", data: { Ecode: ecode } }, function(){
-    toast("🗑 Record deleted.", "info");
-  });
+  postToSheet({ action:"delete", data:{ Ecode: ecode } }, function(){ toast("🗑 Deleted.", "info"); });
   updateDashboard(); renderTable();
 }
 
+// ── CLEAR FORM ──
 function clearForm() {
-  ["ecode","name","mobile","department","designation","location","emailId","imeiNumber"]
-    .forEach(function(id){ document.getElementById(id).value = ""; });
-  ["doj","emailDate","omnifinDate","onboardDate"]
-    .forEach(function(id){ document.getElementById(id).value = ""; });
-  ["bgvDone","bgvReport","idSent","emailCreated","omnifinReq","assetReq","region"]
-    .forEach(function(id){ document.getElementById(id).selectedIndex = 0; });
+  ["ecode","name","mobile","department","designation","location","emailId","imeiNumber"].forEach(function(id){ document.getElementById(id).value = ""; });
+  ["doj","emailDate","omnifinDate","onboardDate"].forEach(function(id){ document.getElementById(id).value = ""; });
+  ["bgvDone","bgvReport","idSent","emailCreated","omnifinReq","assetReq","region"].forEach(function(id){ document.getElementById(id).selectedIndex = 0; });
   document.getElementById("formTitle").innerText = "Add New Joiner";
 }
 
+// ── RENDER TABLE ──
 function getFiltered() {
   var q  = document.getElementById("searchInput").value.toLowerCase();
   var rg = document.getElementById("filterRegion").value;
@@ -582,8 +552,8 @@ function getFiltered() {
     if (q && !e.Name.toLowerCase().includes(q) && !String(e.Ecode).toLowerCase().includes(q)) return false;
     if (rg && e.Region !== rg) return false;
     if (fb && e["BGV Done"] !== fb) return false;
-    if (fs === "complete"   && !isComplete(e)) return false;
-    if (fs === "incomplete" &&  isComplete(e)) return false;
+    if (fs === "complete" && !isComplete(e)) return false;
+    if (fs === "incomplete" && isComplete(e)) return false;
     return true;
   });
 }
@@ -591,7 +561,7 @@ function getFiltered() {
 function renderTable() {
   var filtered = getFiltered();
   document.getElementById("countLabel").innerText = "Showing " + filtered.length + " of " + employees.length + " records";
-  var body   = document.getElementById("tableBody");
+  var body = document.getElementById("tableBody");
   var isDept = role === "department";
   body.innerHTML = "";
   if (!filtered.length) {
@@ -599,42 +569,35 @@ function renderTable() {
     return;
   }
   filtered.forEach(function(e){
-    var p       = calcProgress(e);
-    var pColor  = p === 100 ? "var(--green)" : p >= 50 ? "var(--yellow)" : "var(--red)";
-    var done    = isComplete(e);
-    var region  = safeVal(e, ["Region","region"]);
-    var doj     = formatDate(safeVal(e, ["DOJ","doj"]));
-    var bgv     = safeVal(e, ["BGV Done"]);
-    var email   = safeVal(e, ["Mail ID Created"]);
-    var omnifin = safeVal(e, ["Omnifin Required"]);
-    var idcard  = safeVal(e, ["ID Card Sent"]);
-    var dept    = safeVal(e, ["Department","department"]);
-    var imeiUrl = safeVal(e, ["IMEI Screenshot","IMEI_Screenshot"]);
-    var imeiLink = imeiUrl
+    var p      = calcProgress(e);
+    var pColor = p === 100 ? "var(--green)" : p >= 50 ? "var(--yellow)" : "var(--red)";
+    var imeiUrl = sv(e, ["IMEI Screenshot","IMEI_Screenshot"]);
+    var imeiLink = imeiUrl && imeiUrl.indexOf("http") === 0
       ? '<a href="' + imeiUrl + '" target="_blank" style="color:var(--blue);font-size:11px;text-decoration:none;">🖼 View</a>'
       : '<span style="color:var(--text3);font-size:11px;">—</span>';
-    var ecodeSafe = String(e.Ecode).replace(/'/g,"\\'");
+    var es = String(e.Ecode).replace(/'/g,"\\'");
     var tr = document.createElement("tr");
     tr.innerHTML =
-      '<td class="ecode-cell">' + e.Ecode + '</td>' +
-      '<td class="name-cell">' + e.Name + (done ? ' <span style="color:var(--green);font-size:10px;">✓</span>' : '') + '</td>' +
-      '<td>' + (dept || "—") + '</td>' +
-      '<td>' + (region || "—") + '</td>' +
-      '<td style="color:var(--text3);">' + doj + '</td>' +
-      '<td>' + mkBadge(bgv) + '</td>' +
-      '<td>' + mkBadge(email) + '</td>' +
-      '<td>' + mkBadge(omnifin,"N/Req") + '</td>' +
-      '<td>' + mkBadge(idcard) + '</td>' +
-      '<td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill" style="width:' + p + '%;background:' + pColor + '"></div></div><div class="prog-label">' + p + '%</div></div></td>' +
+      '<td class="ec">' + e.Ecode + '</td>' +
+      '<td class="nc">' + e.Name + (isComplete(e) ? ' <span style="color:var(--green);font-size:10px;">✓</span>' : '') + '</td>' +
+      '<td>' + (sv(e,["Department","department"]) || "—") + '</td>' +
+      '<td>' + (sv(e,["Region","region"]) || "—") + '</td>' +
+      '<td style="color:var(--text3);">' + fmtDate(sv(e,["DOJ","doj"])) + '</td>' +
+      '<td>' + mkBadge(sv(e,["BGV Done"])) + '</td>' +
+      '<td>' + mkBadge(sv(e,["Mail ID Created"])) + '</td>' +
+      '<td>' + mkBadge(sv(e,["Omnifin Required"]),"N/Req") + '</td>' +
+      '<td>' + mkBadge(sv(e,["ID Card Sent"])) + '</td>' +
+      '<td><div class="pw"><div class="pt"><div class="pf" style="width:' + p + '%;background:' + pColor + '"></div></div><div class="pl">' + p + '%</div></div></td>' +
       '<td>' + imeiLink + '</td>' +
-      '<td style="' + (isDept ? 'display:none' : '') + '">' +
-        '<button class="btn btn-success" style="padding:4px 9px;font-size:11px;" onclick="editRow(\'' + ecodeSafe + '\')">Edit</button>' +
-        ' <button class="btn btn-danger" style="padding:4px 9px;font-size:11px;" onclick="deleteRow(\'' + ecodeSafe + '\')">Del</button>' +
+      '<td style="' + (isDept ? "display:none" : "") + '">' +
+        '<button class="btn btn-g" style="padding:4px 9px;font-size:11px;" onclick="editRow(\'' + es + '\')">Edit</button>' +
+        ' <button class="btn btn-d" style="padding:4px 9px;font-size:11px;" onclick="deleteRow(\'' + es + '\')">Del</button>' +
       '</td>';
     body.appendChild(tr);
   });
 }
 
+// ── DASHBOARD ──
 function updateDashboard() {
   var t = employees.length;
   var bgv=0,email=0,omnifin=0,idcard=0,complete=0,r1=0,r2=0,s=0,w=0;
@@ -655,9 +618,8 @@ function updateDashboard() {
   document.getElementById("m-email").innerText    = email;
   document.getElementById("m-omnifin").innerText  = omnifin;
   document.getElementById("m-idcard").innerText   = idcard;
-  var pct  = t ? Math.round(complete/t*100) : 0;
-  var circ = 125.6;
-  document.getElementById("ringCircle").style.strokeDashoffset = circ - (circ * pct / 100);
+  var pct = t ? Math.round(complete/t*100) : 0;
+  document.getElementById("ringCircle").style.strokeDashoffset = 125.6 - (125.6 * pct / 100);
   document.getElementById("ringPct").innerText   = pct + "%";
   document.getElementById("ringLabel").innerText = complete + " of " + t + " completed";
   var checks = [
@@ -675,110 +637,124 @@ function updateDashboard() {
   document.getElementById("regionBars").innerHTML = regions.map(function(r){
     return '<div class="region-bar-item"><div class="rb-top"><span class="rb-name">'+r.name+'</span><span class="rb-count">'+r.count+'</span></div><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(r.count/maxR*100)+'%;background:'+r.color+';"></div></div></div>';
   }).join("");
+  updateGallery();
 }
 
+function updateGallery() {
+  var gallery = document.getElementById("imeiGallery");
+  if (!gallery) return;
+  var withIMEI = employees.filter(function(e){
+    var url = e["IMEI Screenshot"] || e["IMEI_Screenshot"] || "";
+    return url && String(url).indexOf("http") === 0;
+  });
+  if (!withIMEI.length) {
+    gallery.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:20px;text-align:center;grid-column:1/-1;">No IMEI screenshots uploaded yet.</div>';
+    return;
+  }
+  gallery.innerHTML = withIMEI.map(function(e){
+    var url = e["IMEI Screenshot"] || e["IMEI_Screenshot"] || "";
+    var thumbUrl = url;
+    var match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (match) thumbUrl = "https://drive.google.com/thumbnail?id=" + match[1] + "&sz=w200";
+    var es = url.replace(/'/g,"\\'");
+    return '<div class="gallery-card" onclick="window.open(\'' + es + '\',\'_blank\')">' +
+      '<img src="' + thumbUrl + '" onerror="this.style.display=\'none\'">' +
+      '<div class="gallery-card-body">' +
+        '<div class="gallery-ecode">' + e.Ecode + '</div>' +
+        '<div class="gallery-name">' + e.Name + '</div>' +
+        '<div class="gallery-dept">' + (e.Department || "—") + '</div>' +
+      '</div>' +
+    '</div>';
+  }).join("");
+}
+
+// ── APPS SCRIPT POST ──
 function postToSheet(payload, callback) {
   try {
     var iframeName = "hs_" + Date.now();
     var iframe = document.createElement("iframe");
-    iframe.name = iframeName;
-    iframe.style.display = "none";
+    iframe.name = iframeName; iframe.style.display = "none";
     document.body.appendChild(iframe);
     var form = document.createElement("form");
-    form.method = "POST";
-    form.action = APPS_SCRIPT_URL;
-    form.target = iframeName;
-    form.style.display = "none";
+    form.method = "POST"; form.action = APPS_SCRIPT_URL;
+    form.target = iframeName; form.style.display = "none";
     var input = document.createElement("input");
-    input.type  = "hidden";
-    input.name  = "payload";
+    input.type = "hidden"; input.name = "payload";
     input.value = JSON.stringify(payload);
-    form.appendChild(input);
-    document.body.appendChild(form);
+    form.appendChild(input); document.body.appendChild(form);
     form.submit();
     setTimeout(function(){
       try { document.body.removeChild(form); document.body.removeChild(iframe); } catch(e){}
       if (callback) callback();
     }, 2000);
   } catch(err) {
-    console.warn("Sync error:", err);
+    console.warn("Post error:", err);
     if (callback) callback();
   }
 }
 
+// ── LOAD FROM SHEET ──
 function loadFromSheet() {
   fetch(APPS_SCRIPT_URL + "?t=" + Date.now())
-    .then(function(res) { return res.json(); })
-    .then(function(data) {
+    .then(function(res){ return res.json(); })
+    .then(function(data){
       if (Array.isArray(data) && data.length > 0) {
         employees = data;
-        updateDashboard();
-        renderTable();
+        updateDashboard(); renderTable();
         toast("✅ " + data.length + " records loaded", "success");
       } else {
-        toast("📋 No records yet — add your first joiner!", "info");
+        toast("📋 No records yet!", "info");
       }
     })
-    .catch(function() { loadFromSheetJSONP(); });
+    .catch(function(){ loadJSONP(); });
 }
 
-function loadFromSheetJSONP() {
-  var callbackName = "sheetCB_" + Date.now();
-  var script = document.createElement("script");
-  window[callbackName] = function(data) {
+function loadJSONP() {
+  var cb = "scb_" + Date.now();
+  var s  = document.createElement("script");
+  window[cb] = function(data){
     if (Array.isArray(data) && data.length > 0) {
-      employees = data;
-      updateDashboard();
-      renderTable();
+      employees = data; updateDashboard(); renderTable();
+      toast("✅ " + data.length + " records loaded", "success");
     }
-    delete window[callbackName];
-    if (script.parentNode) document.body.removeChild(script);
+    delete window[cb];
+    if (s.parentNode) document.body.removeChild(s);
   };
-  script.onerror = function() {
-    delete window[callbackName];
-    if (script.parentNode) document.body.removeChild(script);
-  };
-  script.src = APPS_SCRIPT_URL + "?callback=" + callbackName + "&t=" + Date.now();
-  document.body.appendChild(script);
+  s.onerror = function(){ delete window[cb]; if (s.parentNode) document.body.removeChild(s); };
+  s.src = APPS_SCRIPT_URL + "?callback=" + cb + "&t=" + Date.now();
+  document.body.appendChild(s);
 }
 
-// Silent background sync — no toast, no disruption
 function silentRefresh() {
   fetch(APPS_SCRIPT_URL + "?t=" + Date.now())
-    .then(function(res) { return res.json(); })
-    .then(function(data) {
+    .then(function(res){ return res.json(); })
+    .then(function(data){
       if (Array.isArray(data) && data.length > 0) {
-        employees = data;
-        updateDashboard();
-        renderTable();
+        employees = data; updateDashboard(); renderTable();
       }
     })
     .catch(function(){
-      // fallback JSONP
       var cb = "scb_" + Date.now();
       var s  = document.createElement("script");
-      window[cb] = function(data) {
-        if (Array.isArray(data) && data.length > 0) {
-          employees = data;
-          updateDashboard();
-          renderTable();
-        }
-        delete window[cb];
-        if (s.parentNode) document.body.removeChild(s);
+      window[cb] = function(data){
+        if (Array.isArray(data) && data.length > 0) { employees = data; updateDashboard(); renderTable(); }
+        delete window[cb]; if (s.parentNode) document.body.removeChild(s);
       };
       s.src = APPS_SCRIPT_URL + "?callback=" + cb + "&t=" + Date.now();
       document.body.appendChild(s);
     });
 }
+
+// ── CSV ──
 function uploadCSV() {
   var file = document.getElementById("csvFile").files[0];
-  if (!file) { toast("Select a CSV file first.", "error"); return; }
+  if (!file) { toast("Select a CSV file.", "error"); return; }
   var reader = new FileReader();
   reader.onload = function(evt){
     var lines   = evt.target.result.split("\n").filter(function(l){ return l.trim(); });
     var headers = lines[0].split(",").map(function(h){ return h.trim().replace(/^"|"$/g,""); });
     var added=0, updated=0;
-    for (var i=1; i<lines.length; i++) {
+    for (var i=1; i<lines.length; i++){
       var vals = lines[i].split(",").map(function(v){ return v.trim().replace(/^"|"$/g,""); });
       var obj  = {};
       headers.forEach(function(h,idx){ obj[h] = vals[idx] || ""; });
@@ -796,39 +772,37 @@ function uploadCSV() {
 function uploadBulkIMEI() {
   var files = document.getElementById("imeiFiles").files;
   if (!files.length) { toast("Select at least one image.", "error"); return; }
-  var status = document.getElementById("imeiUploadStatus");
+  var status = document.getElementById("imeiStatus");
   var total=files.length, done=0, failed=[];
   status.innerHTML = "⏳ Uploading 0 of " + total + "...";
   Array.from(files).forEach(function(file){
     var ecode = file.name.replace(/\.[^/.]+$/,"").trim();
     var match = employees.find(function(e){ return String(e.Ecode) === String(ecode); });
     if (!match) {
-      failed.push(file.name + " (Ecode not found)");
+      failed.push(ecode + " not found");
       done++;
-      status.innerHTML = "⏳ Uploading " + done + " of " + total + "...";
-      if (done === total) finishBulkIMEI(total, failed, status);
+      status.innerHTML = "⏳ " + done + " of " + total + "...";
+      if (done === total) finishBulk(total, failed, status);
       return;
     }
     var reader = new FileReader();
     reader.onload = function(evt){
       postToSheet({ action:"imei_upload", data:{ Ecode:ecode, "IMEI Screenshot Base64":evt.target.result.split(",")[1], "IMEI Screenshot Name":file.name, "IMEI Screenshot Type":file.type }}, function(){
         done++;
-        status.innerHTML = "⏳ Uploading " + done + " of " + total + "...";
-        if (done === total) { finishBulkIMEI(total,failed,status); }
+        status.innerHTML = "⏳ " + done + " of " + total + "...";
+        if (done === total) finishBulk(total, failed, status);
       });
     };
     reader.readAsDataURL(file);
   });
 }
 
-function finishBulkIMEI(total, failed, status) {
-  var success = total - failed.length;
-  if (!failed.length) {
-    status.innerHTML = '<span style="color:var(--green);">✅ All ' + total + ' uploaded!</span>';
-    toast("✅ " + total + " IMEI screenshots uploaded!", "success");
-  } else {
-    status.innerHTML = '<span style="color:var(--green);">✅ ' + success + ' uploaded.</span> <span style="color:var(--red);">❌ ' + failed.join(", ") + '</span>';
-  }
+function finishBulk(total, failed, status) {
+  var ok = total - failed.length;
+  status.innerHTML = failed.length === 0
+    ? '<span style="color:var(--green);">✅ All ' + total + ' uploaded!</span>'
+    : '<span style="color:var(--green);">✅ ' + ok + ' done.</span> <span style="color:var(--red);">❌ ' + failed.join(", ") + '</span>';
+  if (ok > 0) toast("✅ " + ok + " screenshots uploaded!", "success");
 }
 
 function downloadMIS() {
@@ -853,7 +827,7 @@ applyRole();
 updateDashboard();
 renderTable();
 loadFromSheet();
-setInterval(silentRefresh, 5000); // sync every 5 seconds silently
+setInterval(silentRefresh, 5000);
 </script>
 </body>
 </html>
